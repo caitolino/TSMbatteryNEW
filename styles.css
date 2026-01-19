@@ -4,15 +4,47 @@
 
 </style>
 </head>
-
-    .container{
+nav{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%
+    justify-content: space-between;
+    align-items: center;
+    padding: 30px 150px;
+    
+}
+nav ul{
+    display:flex;
+    justify-content: center;
+    gap: 5em;
+    margin-right: 25em;
+    list-style: none;
+}
+nav ul, a{
+    color:#DDAED3;
+    text-decoration: none;
+    background-color: #6594B1;
+    height: auto;
+    width: auto;
+}
+    #container{
         display:flex;
-        column-gap:100px;
     }
+    header{
+        background-color:#213C51;
+        color: #6594B1;
+        height: auto;
+        width: auto;
+        border:10px solid #213C51;
+        font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
     #login{
         color: white;
         background-color: greenyellow;
         border:20px transparent greenyellow;
-        padding: 10px;
-        margin: 2px;
+        height: 30px;
+        width: 60px;
+        text-align: center;
     }
