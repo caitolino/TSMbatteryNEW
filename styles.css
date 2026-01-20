@@ -11,7 +11,6 @@ nav{
     width: 100%
     justify-content: space-between;
     align-items: center;
-    padding: 30px 150px;
     
 }
 nav ul{
@@ -20,18 +19,23 @@ nav ul{
     gap: 5em;
     margin-right: 25em;
     list-style: none;
+    color:#DDAED3
 }
-nav ul, a{
+a{text-decoration: none;}
+.navbar{
     color:#DDAED3;
     text-decoration: none;
     background-color: #6594B1;
     height: auto;
     width: auto;
+    border:3px solid #6594B1;
+    border-radius: 10px;
 }
-    #container{
-        display:flex;
-    }
+
+.navbar:hover{background-color:#EEEEEE !important;
+        border:2px solid #EEEEEE;}
     header{
+        
         background-color:#213C51;
         color: #6594B1;
         height: auto;
@@ -39,12 +43,26 @@ nav ul, a{
         border:10px solid #213C51;
         font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
-    
+    body{font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;}
     #login{
-        color: white;
-        background-color: greenyellow;
-        border:20px transparent greenyellow;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: #EEEEEE;
+        background-color: #DDAED3;
         height: 30px;
         width: 60px;
         text-align: center;
+        border:2px solid #DDAED3;
+        margin:auto;
+        margin-: auto;
+        
     }
+#logo{
+    background-color: #6594B1;
+    height:50px;
+    width:auto;
+}
+#container{
+
+}
