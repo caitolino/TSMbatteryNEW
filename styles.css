@@ -16,10 +16,11 @@ nav{
 nav ul{
     display:flex;
     justify-content: center;
-    gap: 5em;
-    margin-right: 25em;
+    gap: 1em;
+    margin-right: 55em;
     list-style: none;
     color:#DDAED3
+
 }
 a{text-decoration: none;}
 .navbar{
@@ -35,11 +36,14 @@ a{text-decoration: none;}
 .navbar:hover{background-color:#EEEEEE !important;
         border:2px solid #EEEEEE;}
     header{
-        
+        position: fixed;
+        top: 0;
+        left: 0;
+        width:100%;
         background-color:#213C51;
         color: #6594B1;
         height: auto;
-        width: auto;
+        width: 100%;
         border:10px solid #213C51;
         font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
@@ -52,17 +56,32 @@ a{text-decoration: none;}
         background-color: #DDAED3;
         height: 30px;
         width: 60px;
-        text-align: center;
         border:2px solid #DDAED3;
-        margin:auto;
-        margin-: auto;
+        position: absolute;
+        top:0;
+        bottom: 0;
+        left: 0;
+        right: 0;
         
+        margin: auto;
     }
 #logo{
     background-color: #6594B1;
     height:50px;
     width:auto;
+#slogan{
+    background-color: #6594B1;
+    position: absolute; top: 20px;
 }
-#container{
-
+}
+footer{
+    display: flex;
+    position: fixed;
+    left:0;
+    bottom:0;
+    width:100%;
+    color:#213c5162;
+    background-color: #6594b171;
+    justify-content: center;
+    
 }
