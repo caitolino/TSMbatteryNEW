@@ -1,34 +1,40 @@
 const express = require('express');
-const app = express();
+const mongoose = require('mongoose')();
+const cors = require("cors");
 
+
+const app = express();
+app.use(cors());
 app.use(express.json());
-app.get('/',(req,res) => {
-    res.send('Welcome to the Express.js Tutorial');
-})
+
+const MONGO_URI = "mongodb://TSM-5CD2182GXS:27017/batterijbeheer"
+
+mongoose.connect(MONGO_URI, {useNewUrlParser: true, useUnifiedTopology: true})
+    .then(() => console.log("connect"));
+    .catch(err => console.error("connection error:", err));
+
+const batterijenSchema = new mongoose.Schema({}, {collection: "batterijen"})
+const Batterijen = mongoose.model("Test", testSchema);
+
+app.get("/api/batterijen", async (req, res) => {
+    try {
+        const data = await Batterijen.find();
+        res.json(data);
+    } catch (err) {res.status(500).json({error: err.lessage});
+}
+});
+app.post("/api/batterijen", async (req, res) => {
+    try {
+        const newItem = new Test(req.body);
+        await newItem.save();
+        res.json(newItem);
+    } catch (err) {
+        res.status(500).json({error: err.message });
+    }
+});
+
 
 app.listen(3000, () => {
-    console.log('Server is running on http://TSM-5CD2182GXS:27017')
+    console.log('Server is running on http://TSM-5CD2182GXS:3000')
 })
 
-const body parser = require('body parser');
-const mongoose = require('mongoose')();
-app.use
-//conect to mongodb
-mongoose.connect('mongodb://TSM-5CD2182GXS:27017/batterijbeheer')
-    .then(() => console.error(err));
-    .catch(err => console.error(err));
-const options = {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-};
-mongoose.connect('mongodb://TSM-5CD2182GXS:27017/batterijbeheer', options);
-
-app.get("")
-
-fetch('http://TSM-5CD2182GXS:27017/batterijbeheer')
-.then(resizeBy.json())
-.then(users => {
-    const li = document.createElement("li");
-      li.textContent = user.name;
-      list.appendChild(li);
-    });
