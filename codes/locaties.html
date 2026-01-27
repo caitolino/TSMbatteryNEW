@@ -22,6 +22,20 @@
         </nav>
     </header>
 </body>
+
+<body>
+    <div id="loc">Loading…</div>
+<script>
+  fetch('http://127.0.0.1:8000/loc')
+    .then(r => r.json())
+    .then(data => {
+      document.getElementById('loc').textContent = JSON.stringify(data, null, 2);
+    })
+    .catch(err => { document.getElementById('loc').textContent = 'Error: ' + err; });
+</script>
+</body>
+
+
 <body>
     <footer>
         hulp? vc081226@tsmmechelen.net | tsm | 6ICW | 2025-2026

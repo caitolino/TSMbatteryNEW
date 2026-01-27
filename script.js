@@ -1,4 +1,4 @@
-fetch('http://TSM-5CD2182GXS:27017/batterijbeheer')
+fetch('http://TSM-5CD2182GXS:27017/collected_data/batterijbeheer')
 .then(res => res.json())
 .then(batterijen => {
     const list = document.getElementById("data-list");
