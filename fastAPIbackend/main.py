@@ -13,10 +13,9 @@ MONGO_URI = os.getenv("MONGO_URI", "mongodb+srv://Caitlin_db:vc081226@test.sht8t
 
 client = MongoClient(MONGO_URI, serverSelectionTimeoutMS=5000)
 db = client["collected_data"]
-bat_col = db["batterijen"]
-auto_col = db["autos"]
-tag_col = db["apriltags"]   
-loc_col = db["locaties"]
+bat_col = db["BATTERIJEN"]
+tag_col = db["APRIL_TAGS"]   
+loc_col = db["LOCATIES/AUTOS"]
 
 
 @app.on_event("startup")
@@ -59,11 +58,11 @@ def get_data():
     data = list(bat_col.find({}, {"_id": 0}))
     return data
 
-@app.get("/autos")
+@app.get("/loc")
 def get_data():
     if not getattr(app.state, "mongo_ok", False):
         raise HTTPException(status_code=503, detail="MongoDB not available")
-    data = list(auto_col.find({}, {"_id": 0}))
+    data = list(loc_col.find({}, {"_id": 0}))
     return data
 
 @app.get("/tags")
@@ -73,9 +72,4 @@ def get_data():
     data = list(tag_col.find({}, {"_id": 0}))
     return data
 
-@app.get("/loc")
-def get_data():
-    if not getattr(app.state, "mongo_ok", False):
-        raise HTTPException(status_code=503, detail="MongoDB not available")
-    data = list(loc_col.find({}, {"_id": 0}))
-    return data
+@app.post('/tags')
