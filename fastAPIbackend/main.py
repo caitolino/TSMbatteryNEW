@@ -2,6 +2,7 @@ from fastapi import FastAPI, HTTPException
 from pymongo import MongoClient
 import logging
 import os
+from pydantic import BaseModel
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -14,7 +15,7 @@ MONGO_URI = os.getenv("MONGO_URI", "mongodb+srv://Caitlin_db:vc081226@test.sht8t
 client = MongoClient(MONGO_URI, serverSelectionTimeoutMS=5000)
 db = client["collected_data"]
 bat_col = db["BATTERIJEN"]
-tag_col = db["APRIL_TAGS"]   
+tag_col = db["APRILTAGS"]   
 loc_col = db["LOCATIES/AUTOS"]
 
 
@@ -72,4 +73,28 @@ def get_data():
     data = list(tag_col.find({}, {"_id": 0}))
     return data
 
+class Tag(BaseModel):
+    tagId : int
+    assignmentType : str
+    active : bool
+class Loc(BaseModel):
+    type : str
+    locatieUID : str
+    comment : str
+class Bat(BaseModel):
+    batUID : str
+    createdAt : str
+    retiredAt : str
+
 @app.post('/tags')
+def add_data(tag: Tag):
+    tag_col.insert_one(tag.dict())
+    return tag_col
+@app.post('/bat')
+def add_data(bat: Bat):
+    bat_col.insert_one(bat.dict())
+    return bat_col
+@app.post('/loc')
+def add_data(loc: Loc):
+    loc_col.insert_one(loc.dict())
+    return loc_col
