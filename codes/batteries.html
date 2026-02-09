@@ -9,6 +9,23 @@
 </head>
 <style>body{background-color: #EEEEEE;}</style>
 <script src="../script.js"></script>
+<div id="battery-list">Loading…</div>
+<script>
+  async function loadBatteries() {
+    try {
+      const res = await fetch('http://127.0.0.1:8000/bat');
+      if (!res.ok) throw new Error(res.status + ' ' + res.statusText);
+      const data = await res.json();
+      const container = document.getElementById('battery-list');
+      container.innerHTML = data.length
+        ? data.map(b => `<div>${b.batUID || b.batUID ?? ''} — ${b.createdAt || ''}</div>`).join('')
+        : '<div>No items</div>';
+    } catch (e) {
+      document.getElementById('battery-list').textContent = 'Error: ' + e.message;
+    }
+  }
+  loadBatteries();
+</script>
 <body>
     <header>
         <h2>Batterijen</h2>
@@ -31,8 +48,6 @@
         </div>
         <div class="plus">+</div>
     </div>
-
-
 </body>
 <body>
     <footer>

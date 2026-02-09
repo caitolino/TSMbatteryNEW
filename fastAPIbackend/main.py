@@ -3,6 +3,10 @@ from pymongo import MongoClient
 import logging
 import os
 from pydantic import BaseModel
+from fastapi.responses import HTMLResponse
+from fastapi.templating import Jinja2Templates
+from motor.motor_asyncio import AsyncIOMotorClient
+templates = Jinja2Templates(directory="templates")
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -98,3 +102,14 @@ def add_data(bat: Bat):
 def add_data(loc: Loc):
     loc_col.insert_one(loc.dict())
     return loc_col
+
+
+@app.get("/bat", response_class=HTMLResponse)
+async def get_data(bat : Bat):
+    # Data ophalen uit MongoDB
+    batterijverzameling = []
+    async for i in bat_col.find():
+        items.append(i)
+    
+    # Data doorgeven aan de HTML template
+    return templates.TemplateResponse("index.html", {"request": request, "items": items})
