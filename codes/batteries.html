@@ -8,26 +8,7 @@
     <!-- comment -->
 </head>
 <style>body{background-color: #EEEEEE;}</style>
-<div id="battery-list">Loading…</div>
-<script>
-  async function loadBatteries() {
-    try {
-      const res = await fetch('http://127.0.0.1:8000/bat');
-      const data = await res.json();
-      const html = data.map(b => `
-        <div class="data-item">
-          <strong>Battery UID:</strong> ${b.batUID}<br>
-          <strong>Created:</strong> ${b.createdAt}<br>
-          <strong>Retired:</strong> ${b.retiredAt || 'N/A'}
-        </div>
-      `).join('');
-      document.getElementById('battery-list').innerHTML = html || '<p>No batteries found</p>';
-    } catch (e) {
-      document.getElementById('battery-list').innerHTML = `<p style="color:red;">Error: ${e.message}</p>`;
-    }
-  }
-  loadBatteries();
-</script>
+
 <body>
     <header>
         <h2>Batterijen</h2>
@@ -45,10 +26,26 @@
 <body>
     <div class="container">
         <h3>Alle aangemaakte batterijen</h3>
-        <div class="data">
-            <ul id="batterijen"></ul>
-        </div>
-        <div class="plus">+</div>
+        <div id="battery-list">Loading…</div>
+        <script>
+            async function loadBatteries() {
+                try {
+                const res = await fetch('http://127.0.0.1:8000/bat');
+                const data = await res.json();
+                const html = data.map(b => `
+                    <div class="data-item">
+                    <strong>Battery UID:</strong> ${b.batUID}<br>
+                    <strong>Created:</strong> ${b.createdAt}<br>
+                    <strong>Retired:</strong> ${b.retiredAt || 'N/A'}
+                    </div>
+                `).join('');
+                document.getElementById('battery-list').innerHTML = html || '<p>No batteries found</p>';
+                } catch (e) {
+                document.getElementById('battery-list').innerHTML = `<p style="color:red;">Error: ${e.message}</p>`;
+                }
+            }
+            loadBatteries();
+        </script>
     </div>
 </body>
 <body>

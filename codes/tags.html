@@ -24,25 +24,31 @@
     </header>
 </body>
 
-<body>
-    <div id="tags-list">Loading…</div>
-    <script>
-    fetch('http://127.0.0.1:8000/tags')
-        .then(r => r.json())
-        .then(data => {
-        const html = data.map(tag => `
-            <div class="data-item">
-            <strong>Tag ID:</strong> ${tag.tagId}<br>
-            <strong>Type:</strong> ${tag.assignmentType}<br>
-            <strong>Status:</strong> ${tag.active ? '✓ Active' : '✗ Inactive'}
-            </div>
-        `).join('');
-        document.getElementById('tags-list').innerHTML = html || '<p>No tags found</p>';
-        })
-        .catch(err => { document.getElementById('tags-list').innerHTML = `<p style="color:red;">Error: ${err}</p>`; });
-    </script>
-</body>
 
+
+
+
+<body>
+    <div class="container">
+        <h3>Alle aangemaakte batterijen</h3>
+        <div id="tags-list">Loading…</div>
+        <script>
+            fetch('http://127.0.0.1:8000/tags')
+                .then(r => r.json())
+                .then(data => {
+                const html = data.map(tag => `
+                    <div class="data-item">
+                    <strong>Tag ID:</strong> ${tag.tagId}<br>
+                    <strong>Type:</strong> ${tag.assignmentType}<br>
+                    <strong>Status:</strong> ${tag.active ? '✓ Active' : '✗ Inactive'}
+                    </div>
+                `).join('');
+                document.getElementById('tags-list').innerHTML = html || '<p>No tags found</p>';
+                })
+                .catch(err => { document.getElementById('tags-list').innerHTML = `<p style="color:red;">Error: ${err}</p>`; });
+        </script>
+    </div>
+</body>
 
 <body>
     <footer>

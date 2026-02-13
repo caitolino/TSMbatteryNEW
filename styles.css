@@ -107,3 +107,18 @@ align-items: end;}
 .data{flex-direction: column;
     background-color: #DDAED3;
 padding:10px}
+.data-item{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: #DDAED3;
+    height: auto;
+    position: absolute;
+    top:0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+    column-gap: 10px;
+}

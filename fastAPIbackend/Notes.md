@@ -14,4 +14,6 @@ Test-Path .venv
 3: 
 python -m uvicorn main:app --reload --host 127.0.0.1 --port 8000
 
-.\.venv\Scripts\Activate.ps1; python -m uvicorn main:app --reload --host 127.0.0.1 --port 8000
+cd c:\Users\CaitlinVanDenBlock\Documents\TSMgithub\fastAPIbackend
+.\.venv\Scripts\Activate.ps1
+python -m uvicorn main:app --reload --host 127.0.0.1 --port 8000

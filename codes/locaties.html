@@ -23,23 +23,29 @@
     </header>
 </body>
 
-<div id="loc">Loading…</div>
-<script>
-  fetch('http://127.0.0.1:8000/loc')
-    .then(r => r.json())
-    .then(data => {
-      const html = data.map(item => `
-        <div class="data-item">
-          <strong>Location UID:</strong> ${item.locatieUID}<br>
-          <strong>Type:</strong> ${item.type}<br>
-          <strong>Comment:</strong> ${item.comment}
-        </div>
-      `).join('');
-      document.getElementById('loc').innerHTML = html || '<p>No locations found</p>';
-    })
-    .catch(err => { document.getElementById('loc').innerHTML = `<p style="color:red;">Error: ${err}</p>`; });
-</script>
 
+
+<body>
+    <div class="container">
+        <h3>Alle aangemaakte batterijen</h3>
+        <div id="loc">Loading…</div>
+        <script>
+            fetch('http://127.0.0.1:8000/loc')
+                .then(r => r.json())
+                .then(data => {
+                const html = data.map(item => `
+                    <div class="data-item">
+                    <strong>Location UID:</strong> ${item.locatieUID}<br>
+                    <strong>Type:</strong> ${item.type}<br>
+                    <strong>Comment:</strong> ${item.comment}
+                    </div>
+                `).join('');
+                document.getElementById('loc').innerHTML = html || '<p>No locations found</p>';
+                })
+                .catch(err => { document.getElementById('loc').innerHTML = `<p style="color:red;">Error: ${err}</p>`; });
+        </script>
+    </div>
+</body>
 
 <body>
     <footer>
