@@ -8,6 +8,7 @@
     <!-- comment -->
 </head>
 <style>body{background-color: #EEEEEE;}</style>
+
 <body>
     <header>
         <h2>Tags</h2>
@@ -22,6 +23,27 @@
         </nav>
     </header>
 </body>
+
+<body>
+    <div id="tags-list">Loading…</div>
+    <script>
+    fetch('http://127.0.0.1:8000/tags')
+        .then(r => r.json())
+        .then(data => {
+        const html = data.map(tag => `
+            <div class="data-item">
+            <strong>Tag ID:</strong> ${tag.tagId}<br>
+            <strong>Type:</strong> ${tag.assignmentType}<br>
+            <strong>Status:</strong> ${tag.active ? '✓ Active' : '✗ Inactive'}
+            </div>
+        `).join('');
+        document.getElementById('tags-list').innerHTML = html || '<p>No tags found</p>';
+        })
+        .catch(err => { document.getElementById('tags-list').innerHTML = `<p style="color:red;">Error: ${err}</p>`; });
+    </script>
+</body>
+
+
 <body>
     <footer>
         hulp? vc081226@tsmmechelen.net | tsm | 6ICW | 2025-2026

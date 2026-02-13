@@ -8,20 +8,22 @@
     <!-- comment -->
 </head>
 <style>body{background-color: #EEEEEE;}</style>
-<script src="../script.js"></script>
 <div id="battery-list">Loading…</div>
 <script>
   async function loadBatteries() {
     try {
       const res = await fetch('http://127.0.0.1:8000/bat');
-      if (!res.ok) throw new Error(res.status + ' ' + res.statusText);
       const data = await res.json();
-      const container = document.getElementById('battery-list');
-      container.innerHTML = data.length
-        ? data.map(b => `<div>${b.batUID || b.batUID ?? ''} — ${b.createdAt || ''}</div>`).join('')
-        : '<div>No items</div>';
+      const html = data.map(b => `
+        <div class="data-item">
+          <strong>Battery UID:</strong> ${b.batUID}<br>
+          <strong>Created:</strong> ${b.createdAt}<br>
+          <strong>Retired:</strong> ${b.retiredAt || 'N/A'}
+        </div>
+      `).join('');
+      document.getElementById('battery-list').innerHTML = html || '<p>No batteries found</p>';
     } catch (e) {
-      document.getElementById('battery-list').textContent = 'Error: ' + e.message;
+      document.getElementById('battery-list').innerHTML = `<p style="color:red;">Error: ${e.message}</p>`;
     }
   }
   loadBatteries();

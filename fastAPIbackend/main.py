@@ -1,17 +1,26 @@
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from pymongo import MongoClient
 import logging
 import os
 from pydantic import BaseModel
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
-from motor.motor_asyncio import AsyncIOMotorClient
 templates = Jinja2Templates(directory="templates")
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 app = FastAPI()
+
+# Enable CORS
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Allow all origins (or specify ["http://127.0.0.1:8000", "file://"])
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # MongoDB connection (configurable via MONGO_URI env var)
 MONGO_URI = os.getenv("MONGO_URI", "mongodb+srv://Caitlin_db:vc081226@test.sht8tpb.mongodb.net/admin")
@@ -79,11 +88,11 @@ def get_data():
 
 class Tag(BaseModel):
     tagId : int
-    assignmentType : str
+    type : str
     active : bool
 class Loc(BaseModel):
     type : str
-    locatieUID : str
+    name : str
     comment : str
 class Bat(BaseModel):
     batUID : str
@@ -104,12 +113,3 @@ def add_data(loc: Loc):
     return loc_col
 
 
-@app.get("/bat", response_class=HTMLResponse)
-async def get_data(bat : Bat):
-    # Data ophalen uit MongoDB
-    batterijverzameling = []
-    async for i in bat_col.find():
-        items.append(i)
-    
-    # Data doorgeven aan de HTML template
-    return templates.TemplateResponse("index.html", {"request": request, "items": items})

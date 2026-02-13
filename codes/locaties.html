@@ -23,17 +23,22 @@
     </header>
 </body>
 
-<body>
-    <div id="loc">Loading…</div>
+<div id="loc">Loading…</div>
 <script>
   fetch('http://127.0.0.1:8000/loc')
     .then(r => r.json())
     .then(data => {
-      document.getElementById('loc').textContent = JSON.stringify(data, null, 2);
+      const html = data.map(item => `
+        <div class="data-item">
+          <strong>Location UID:</strong> ${item.locatieUID}<br>
+          <strong>Type:</strong> ${item.type}<br>
+          <strong>Comment:</strong> ${item.comment}
+        </div>
+      `).join('');
+      document.getElementById('loc').innerHTML = html || '<p>No locations found</p>';
     })
-    .catch(err => { document.getElementById('loc').textContent = 'Error: ' + err; });
+    .catch(err => { document.getElementById('loc').innerHTML = `<p style="color:red;">Error: ${err}</p>`; });
 </script>
-</body>
 
 
 <body>
