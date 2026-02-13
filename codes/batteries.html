@@ -36,7 +36,7 @@
                     <div class="data-item">
                     <strong>Battery UID:</strong> ${b.batUID}<br>
                     <strong>Created:</strong> ${b.createdAt}<br>
-                    <strong>Retired:</strong> ${b.retiredAt || 'N/A'}
+                    <strong>Retired:</strong> ${b.retiredAt || '/'}
                     </div>
                 `).join('');
                 document.getElementById('battery-list').innerHTML = html || '<p>No batteries found</p>';

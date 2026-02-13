@@ -40,7 +40,7 @@
                     <div class="data-item">
                     <strong>Tag ID:</strong> ${tag.tagId}<br>
                     <strong>Type:</strong> ${tag.assignmentType}<br>
-                    <strong>Status:</strong> ${tag.active ? '✓ Active' : '✗ Inactive'}
+                    <strong>Status:</strong> ${tag.active ? 'Active' : 'Inactive'}
                     </div>
                 `).join('');
                 document.getElementById('tags-list').innerHTML = html || '<p>No tags found</p>';
