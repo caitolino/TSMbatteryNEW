@@ -1,124 +1,117 @@
-<head>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Sofia">
-    <style>
+:root{
+    --header-height: 80px;
+    --footer-height: 50px;
+}
 
-    </style>
-</head>
+/* Page base */
+*{box-sizing: border-box}
+body{
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding-top: var(--header-height);
+    padding-bottom: var(--footer-height);
+}
+
+/* Navigation */
 nav{
-    position: fixed
-    top: 0
-    left: 0
-    width: 100%
-    justify-content: space-between
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
     align-items: center;
-    
 }
 nav ul{
     display:flex;
     justify-content: center;
     gap: 1em;
-    margin-right: 55em;
     list-style: none;
-    color:#DDAED3
-
+    margin: 0;
+    padding: 0;
+    color:#DDAED3;
 }
 a{text-decoration: none;}
 .navbar{
     color:#DDAED3;
     text-decoration: none;
     background-color: #6594B1;
-    height: auto;
-    width: auto;
     border:3px solid #6594B1;
     border-radius: 10px;
+    padding: 6px 10px;
+}
+.navbar:hover{background-color:#EEEEEE !important; border:2px solid #EEEEEE}
+
+
+header{
+    display:flex;
+    flex-direction:column;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: var(--header-height);
+    width: 100%;
+    background-color:#213C51;
+    color: #6594B1;
+    border-bottom: 1px solid rgba(0,0,0,0.1);
+    display: flex;
+    align-items: center;
+    padding: 0 16px;
 }
 
-.navbar:hover{background-color:#EEEEEE !important;
-        border:2px solid #EEEEEE;}
-    header{
-        position: fixed;
-        top: 0;
-        left: 0;
-        width:100%;
-        background-color:#213C51;
-        color: #6594B1;
-        height: auto;
-        width: 100%;
-        border:10px solid #213C51;
-        font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    }
-    body{font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;}
-    #login{
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        color: #EEEEEE;
-        background-color: #DDAED3;
-        height: 30px;
-        width: 60px;
-        border:2px solid #DDAED3;
-        position: absolute;
-        top:0;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        
-        margin: auto;
-    }
-#logo{
-    background-color: #6594B1;
-    height:50px;
-    width:auto;
-#slogan{
-    background-color: #6594B1;
-    position: absolute; top: 20px;
+/* Login box (centered within flow) */
+#login{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #EEEEEE;
+    background-color: #DDAED3;
+    height: 30px;
+    width: 60px;
+    border:2px solid #DDAED3;
+    margin: 0;
+    position: relative;
 }
-}
+
+#logo{ background-color: #6594B1; height:50px; margin:2px}
+#slogan{ background-color: #6594B1; margin-left: 8px; }
+
+/* Footer */
 footer{
     display: flex;
     position: fixed;
     left:0;
     bottom:0;
+    height: var(--footer-height);
     width:100%;
-    color:#213c5162;
-    background-color: #6594b171;
+    color:#213c51;
+    background-color: rgba(101,148,177,0.45);
     justify-content: center;
-    
+    align-items: center;
 }
+
+/* Main content container: use normal flow so header/footer padding works */
 .container{
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: flex-start;
     color: #EEEEEE;
-    height: 200px;
-    position: absolute;
-    top:0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    margin: auto;
-    column-gap: 10px;
+    width: 100%;
+    max-width: 1100px;
+    margin: 24px auto;
+    gap: 10px;
+    padding: 16px;
 }
-.placeholder{flex-direction: column;
-    background-color: #DDAED3;
-padding:10px}
-.plus{position:absolute;
-align-items: end;}
-.data{flex-direction: column;
-    background-color: #DDAED3;
-padding:10px}
-.data-item{
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    color: #DDAED3;
-    height: auto;
-    position: absolute;
-    top:0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    margin: auto;
-    column-gap: 10px;
-}
+.placeholder{display:flex; flex-direction: column; background-color: #DDAED3; padding:10px}
+.plus{position:relative}
+.data-item{ display: flex; 
+    flex-direction: column; 
+    justify-content:center; 
+    align-items: flex-start; 
+    color:#6594B1; 
+    padding: 10px; 
+    margin: 10px 0; 
+    background-color: #DDAED3; 
+    border-radius: 5px;
+    width: 100%;
+    float: left; }
