@@ -93,22 +93,15 @@ def get_data():
                 "foreignField": "tagId",
                 "as": "assignments"
             }
-        },
-        {
-            "$project": {
-                "type": 1,
-                "active": 1,
-                "tagId": 1,
-                "_id": 0,
-                "assignments.tagId": 0,
-                "assignments._id": 0,
-                "assignments.validFrom": 1,
-                "assignments.validTo": 1,
-                "assignments.assignedId": 1
-            }
         }
     ]
     data = list(tag_col.aggregate(pipeline))
+    for tag in data:
+        tag.pop("_id", None)  # remove tag _id
+        for assign in tag.get("assignments", []):
+            assign.pop("_id", None)      # remove assignment _id
+            assign.pop("tagId", None)    # remove assignment tagId if you don't want it
+
     return data
 
 @app.get("/assign")
