@@ -32,21 +32,38 @@
     <div class="containergroot">
         <div class = "h3"><h3>Alle aangemaakte tags</h3></div>
         <div id="tags-list">Loading…</div>
-        <script>
-            fetch('http://127.0.0.1:8000/tags')
-                .then(r => r.json())
-                .then(data => {
-                const html = data.map(tag => `
-                    <div class="data-item">
-                    <strong>Tag ID:</strong> ${tag.tagId}<br>
-                    <strong>Type:</strong> ${tag.assignmentType}<br>
-                    <strong>Status:</strong> ${tag.active ? 'Active' : 'Inactive'}
-                    </div>
-                `).join('');
-                document.getElementById('tags-list').innerHTML = html || '<p>No tags found</p>';
-                })
-                .catch(err => { document.getElementById('tags-list').innerHTML = `<p style="color:red;">Error: ${err}</p>`; });
-        </script>
+        <div id="tags-container"></div>
+
+<script>
+fetch('http://127.0.0.1:8000/tags')
+  .then(r => r.json())
+  .then(data => {
+    const html = data.map(tag => {
+      // bouw de assignments per tag in jouw stijl
+      const assignmentsHtml = tag.assignments.length
+        ? tag.assignments.map(a => `
+            <div class="assignment-item">
+              <strong>Assigned ID:</strong> ${a.assignedId}<br>
+              <strong>Valid From:</strong> ${a.validFrom}<br>
+              <strong>Valid To:</strong> ${a.validTo}
+            </div>
+          `).join('')
+        : 'None';
+
+      return `
+        <div class="data-item">
+          <strong>Tag ID:</strong> ${tag.tagId}<br>
+          <strong>Type:</strong> ${tag.type}<br>
+          <strong>Status:</strong> ${tag.active ? 'Active' : 'Inactive'}<br>
+          <strong>Assignments:</strong><br>
+          ${assignmentsHtml}
+        </div>
+      `;
+    }).join('');
+
+    document.getElementById('tags-container').innerHTML = html;
+  });
+</script>
     </div>
 </body>
 
