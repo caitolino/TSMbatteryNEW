@@ -84,7 +84,38 @@ def get_data():
 def get_data():
     if not getattr(app.state, "mongo_ok", False):
         raise HTTPException(status_code=503, detail="MongoDB not available")
-    data = list(tag_col.find({}, {"_id": 0}))
+    #data = list(tag_col.find({}, {"_id": 0}))
+    pipeline = [
+        {
+            "$lookup": {
+                "from": "TAG_ASSIGNMENTS",
+                "localField": "tagId",
+                "foreignField": "tagId",
+                "as": "assignments"
+            }
+        },
+        {
+            "$project": {
+                "type": 1,
+                "active": 1,
+                "tagId": 1,
+                "_id": 0,
+                "assignments.tagId": 0,
+                "assignments._id": 0,
+                "assignments.validFrom": 1,
+                "assignments.validTo": 1,
+                "assignments.assignedId": 1
+            }
+        }
+    ]
+    data = list(tag_col.aggregate(pipeline))
+    return data
+
+@app.get("/assign")
+def get_data():
+    if not getattr(app.state, "mongo_ok", False):
+        raise HTTPException(status_code=503, detail="MongoDB not available")
+    data = list(assign_col.find({}, {"_id": 0}))
     return data
 
 class Tag(BaseModel):
@@ -99,7 +130,12 @@ class Bat(BaseModel):
     batUID : str
     createdAt : str
     retiredAt : str
-class Assignment (BaseModel):
+class Assign (BaseModel):
+    tagId : int
+    validFrom : str
+    validTo : str
+    type : str
+    assignedId : str
 
 
 @app.post('/tags')
@@ -114,5 +150,8 @@ def add_data(bat: Bat):
 def add_data(loc: Loc):
     loc_col.insert_one(loc.dict())
     return loc_col
-
+@app.post('/assign')
+def add_data(assign: Assign):
+    assign_col.insert_one(assign.dict())
+    return assign_col
 
