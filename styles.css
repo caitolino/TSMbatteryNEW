@@ -117,15 +117,17 @@ footer{
     float: left; }
 .h3{color:#6594B1}
 
-.container{
-    display: flex;
+.containergroot{
+    background-color: rgba(198, 219, 233, 0.45);
+    display: inline-block;
     flex-direction: column;
     justify-content: center;
     align-items: flex-start;
     color: #EEEEEE;
-    width: 100%;
-    max-width: 1100px;
-    margin: 24px auto;
+    width: auto;
+    margin: 24px;
     gap: 10px;
     padding: 16px;
+    border: 3px solid rgba(198, 219, 233, 0.45);
+    border-radius: 10px;
 }

@@ -30,6 +30,7 @@ db = client["collected_data"]
 bat_col = db["BATTERIJEN"]
 tag_col = db["APRILTAGS"]   
 loc_col = db["LOCATIES/AUTOS"]
+assign_col = db["TAG_ASSIGNMENTS"]
 
 
 @app.on_event("startup")
@@ -98,6 +99,8 @@ class Bat(BaseModel):
     batUID : str
     createdAt : str
     retiredAt : str
+class Assignment (BaseModel):
+
 
 @app.post('/tags')
 def add_data(tag: Tag):
