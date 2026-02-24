@@ -39,7 +39,6 @@ fetch('http://127.0.0.1:8000/tags')
   .then(r => r.json())
   .then(data => {
     const html = data.map(tag => {
-      // bouw de assignments per tag in jouw stijl
       const assignmentsHtml = tag.assignments.length
         ? tag.assignments.map(a => `
             <div class="assignment-item">

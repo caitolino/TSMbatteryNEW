@@ -1,5 +1,6 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi import Form
 from pymongo import MongoClient
 import logging
 import os
@@ -120,9 +121,10 @@ class Loc(BaseModel):
     name : str
     comment : str
 class Bat(BaseModel):
-    batUID : str
     createdAt : str
     retiredAt : str
+    batUID : str
+    comment : str
 class Assign (BaseModel):
     tagId : int
     validFrom : str
@@ -136,13 +138,13 @@ def add_data(tag: Tag):
     tag_col.insert_one(tag.dict())
     return tag_col
 @app.post('/bat')
-def add_data(bat: Bat):
-    bat_col.insert_one(bat.dict())
-    return bat_col
+def add_data(createdAt: str = Form(...), retiredAt: str = Form(...),batUID: str = Form(...), comment: str = Form(...)):
+    bat_col.insert_one({"createdAt": createdAt, "reiredAt": retiredAt, "batUID": batUID, "comment": comment})
+    return {"message": "Batterij toegevoegd!Sluit dit venster en refresh de pagina om de aanpassingen te zien"}
 @app.post('/loc')
-def add_data(loc: Loc):
-    loc_col.insert_one(loc.dict())
-    return loc_col
+def add_data(type: str = Form(...), name: str = Form(...), comment: str = Form(...)):
+    loc_col.insert_one({"type": type, "name": name, "comment": comment})
+    return {"message": "Locatie toegevoeg! Sluit dit venster en refresh de pagina om de aanpassingen te zien"}
 @app.post('/assign')
 def add_data(assign: Assign):
     assign_col.insert_one(assign.dict())

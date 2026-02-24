@@ -24,29 +24,32 @@
     </header>
 </body>
 <body>
-    <div class="containergroot">
-        <div class = "h3"><h3>Alle aangemaakte batterijen</h3></div>
-        <div id="battery-list">Loading…</div>
-        <script>
-            async function loadBatteries() {
-                try {
-                const res = await fetch('http://127.0.0.1:8000/bat');
-                const data = await res.json();
-                const html = data.map(b => `
-                    <div class="data-item">
-                    <strong>Battery UID:</strong> ${b.batUID}<br>
-                    <strong>Created:</strong> ${b.createdAt}<br>
-                    <strong>Retired:</strong> ${b.retiredAt || '/'}
-                    </div>
-                `).join('');
-                document.getElementById('battery-list').innerHTML = html || '<p>No batteries found</p>';
-                } catch (e) {
-                document.getElementById('battery-list').innerHTML = `<p style="color:red;">Error: ${e.message}</p>`;
+    <container>
+        <div class="containergroot">
+            <div class = "h3"><h3>Alle aangemaakte batterijen</h3></div>
+            <div id="battery-list">Loading…</div>
+            <script>
+                async function loadBatteries() {
+                    try {
+                    const res = await fetch('http://127.0.0.1:8000/bat');
+                    const data = await res.json();
+                    const html = data.map(b => `
+                        <div class="data-item">
+                        <strong>Battery UID:</strong> ${b.batUID}<br>
+                        <strong>Created:</strong> ${b.createdAt}<br>
+                        <strong>Retired:</strong> ${b.retiredAt || '/'}
+                        </div>
+                    `).join('');
+                    document.getElementById('battery-list').innerHTML = html || '<p>No batteries found</p>';
+                    } catch (e) {
+                    document.getElementById('battery-list').innerHTML = `<p style="color:red;">Error: ${e.message}</p>`;
+                    }
                 }
-            }
-            loadBatteries();
-        </script>
-    </div>
+                loadBatteries();
+            </script>
+        </div>
+        <a href="../popUp/BatteryAdd.html" target="_blank" rel="noreferrer"><span class= "plus">✚</span></a>
+    </container>
 </body>
 <body>
     <footer>

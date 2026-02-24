@@ -102,10 +102,9 @@ footer{
     gap: 10px;
     padding: 16px;
 }
-.placeholder{display:flex; flex-direction: column; background-color: #DDAED3; padding:10px}
-.plus{position:relative}
+
 .data-item{ display: flex; 
-    flex-direction: column; 
+    flex-direction:column; 
     justify-content:center; 
     align-items: flex-start; 
     color:#6594B1; 
@@ -129,5 +128,10 @@ footer{
     gap: 10px;
     padding: 16px;
     border: 3px solid rgba(198, 219, 233, 0.45);
-    border-radius: 10px;
-}
+    border-radius: 10px;}
+.tabel{flex-direction: column-reverse;}
+.plus{width :30px; height: 30px; color:#EEEEEE; 
+    background-color:#DDAED3;
+    box-shadow: 2px 2px 2px #b68ead;border-radius: 50%;display: inline-flex;
+    align-items: center; justify-content: center;}
+.titleplus{display:flex; flex-direction: row; column-gap : 10px}
