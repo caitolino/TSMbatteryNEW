@@ -60,18 +60,28 @@ header{
 }
 
 
-#login{
+#leerling{
     display: flex;
     justify-content: center;
     align-items: center;
     color: #EEEEEE;
     background-color: #DDAED3;
-    height: 30px;
-    width: 60px;
     border:2px solid #DDAED3;
     margin: 0;
     position: relative;
 }
+
+#leerkracht{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color:#213C51;
+    background-color:#6594B1;
+    border:2px solid #6594B1;
+    margin: 0;
+    position: relative;
+}
+.login{display:flex; flex-direction:row; column-gap:3px;}
 
 #logo{ background-color: #6594B1; height:50px; margin:2px}
 #slogan{ background-color: #6594B1; margin-left: 8px; }
