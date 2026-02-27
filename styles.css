@@ -3,7 +3,7 @@
     --footer-height: 50px;
 }
 
-/* Page base */
+
 *{box-sizing: border-box}
 body{
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -12,7 +12,7 @@ body{
     padding-bottom: var(--footer-height);
 }
 
-/* Navigation */
+
 nav{
     position: fixed;
     top: 0;
@@ -59,7 +59,7 @@ header{
     padding: 0 16px;
 }
 
-/* Login box (centered within flow) */
+
 #login{
     display: flex;
     justify-content: center;
@@ -76,7 +76,7 @@ header{
 #logo{ background-color: #6594B1; height:50px; margin:2px}
 #slogan{ background-color: #6594B1; margin-left: 8px; }
 
-/* Footer */
+
 footer{
     display: flex;
     position: fixed;
@@ -90,7 +90,6 @@ footer{
     align-items: center;
 }
 
-/* Main content container: use normal flow so header/footer padding works */
 .container{
     display: flex;
     justify-content: center;
@@ -119,7 +118,6 @@ footer{
 .containergroot{
     background-color: rgba(198, 219, 233, 0.45);
     display: inline-block;
-    flex-direction: column;
     justify-content: center;
     align-items: flex-start;
     color: #EEEEEE;
@@ -135,3 +133,9 @@ footer{
     box-shadow: 2px 2px 2px #b68ead;border-radius: 50%;display: inline-flex;
     align-items: center; justify-content: center;}
 .titleplus{display:flex; flex-direction: row; column-gap : 10px}
+.form{
+    border:10px solid rgba(198, 219, 233, 0.45);
+    color:#c39aba;
+    outline: 2px solid #c39aba;
+    display: inline-block;
+    background-color:rgba(209, 223, 233, 0.45);}

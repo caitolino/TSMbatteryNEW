@@ -8,6 +8,7 @@ from pydantic import BaseModel
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 templates = Jinja2Templates(directory="templates")
+import hashlib
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -32,6 +33,8 @@ bat_col = db["BATTERIJEN"]
 tag_col = db["APRILTAGS"]   
 loc_col = db["LOCATIES/AUTOS"]
 assign_col = db["TAG_ASSIGNMENTS"]
+ad_col = db["admin_users"]
+user_col = db["users"]
 
 
 @app.on_event("startup")
@@ -65,6 +68,20 @@ def get_data():
     if not getattr(app.state, "mongo_ok", False):
         raise HTTPException(status_code=503, detail="MongoDB not available")
     data = list(bat_col.find({}, {"_id": 0}))
+    return data
+
+@app.get("/admin")
+def get_data():
+    if not getattr(app.state, "mongo_ok", False):
+        raise HTTPException(status_code=503, detail="MongoDB not available")
+    data = list(ad_col.find({}, {"_id": 0}))
+    return data
+
+@app.get("/user")
+def get_data():
+    if not getattr(app.state, "mongo_ok", False):
+        raise HTTPException(status_code=503, detail="MongoDB not available")
+    data = list(user_col.find({}, {"_id": 0}))
     return data
 
 @app.get("/bat")
@@ -131,6 +148,9 @@ class Assign (BaseModel):
     validTo : str
     type : str
     assignedId : str
+class User (BaseModel):
+    username: str
+    password: str
 
 
 @app.post('/tags')
@@ -149,4 +169,9 @@ def add_data(type: str = Form(...), name: str = Form(...), comment: str = Form(.
 def add_data(assign: Assign):
     assign_col.insert_one(assign.dict())
     return assign_col
+@app.post('/user')
+def add_data(username: str = Form(...), password: str = Form(...)):
+    user_col.insert_one({"username": username, "password": password,})
+    return {"message": "Leerling toegevoeg! Sluit dit venster en refresh de pagina om de aanpassingen te zien"}
+
 

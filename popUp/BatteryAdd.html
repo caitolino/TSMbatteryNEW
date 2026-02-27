@@ -3,17 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Auto's</title>
+    <title>ToevoegenBatterij</title>
     <link rel="stylesheet" href="../styles.css">
     <!-- comment -->
 </head>
 <style>body{background-color: #EEEEEE;}</style>
 <body>
-  <form action="http://127.0.0.1:8000/bat" method="POST">
-    <input type="text" name="createdAt" placeholder="d-m-j, u:m" required />
-    <input type="text" name="retiredAt" placeholder="d-m-j, u:m" required />
-    <input type="text" name="batUID" placeholder="batUID" required />
-    <input type="text" name="comment" placeholder="commentaar" required />
-    <button type="submit">Submit</button>
-  </form>
+  <div class="form">
+    <form action="http://127.0.0.1:8000/bat" method="POST">
+      <H2>Batterij</H2>
+      <label for="createdAt">gecreëerd op:</label><br>
+      <input type="text" name="createdAt" placeholder="d-m-j, u:m" required /><br>
+      <label for="retiredAt">stopgezet op:</label><br>
+      <input type="text" name="retiredAt" placeholder="d-m-j, u:m" required /><br>
+      <label for="batUID">naam:</label><br>
+      <input type="text" name="batUID" placeholder="batUID" required /><br>
+      <label for="comment">commentaar:</label><br>
+      <input type="text" name="comment" placeholder="/" required /><br>
+      <p><button type="submit">submit!</button></p>
+    </form>
+  </div>
 </body>
+</html>

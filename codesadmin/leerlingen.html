@@ -3,54 +3,57 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Batterijen</title>
+    <title>Leerlingen</title>
     <link rel="stylesheet" href="../styles.css">
     <!-- comment -->
 </head>
 <style>body{background-color: #EEEEEE;}</style>
-
 <body>
     <header>
-        <h2>Batterijen</h2>
+        <h2>Leerlingen</h2>
         <nav>
         <a href="../home.html"><img class="navbar" id="logo" src="../img/Logo.png" alt="tsm logo" style="height:50px; width:auto;"></a>
         <ul>
-                <li><a class="navbar" href="batteries.html">batterijen</a></li>
-                <li><a class="navbar" href="wedstrijden.html">wedstrijden</a></li>
-                <li><a class="navbar" href="locaties.html">locaties</a></li>
-                <li><a class="navbar" href="tags.html">tags</a></li>
+                <li><a class="navbar" href="batadmin.html">batterijen</a></li>
+                <li><a class="navbar" href="racadmin.html">wedstrijden</a></li>
+                <li><a class="navbar" href="locadmin.html">locaties</a></li>
+                <li><a class="navbar" href="tadmin.html">tags</a></li>
+                <li><a class="navbar" href="leerlingen.html">leerlingen</a></li>
             </ul>
         </nav>
     </header>
 </body>
+
+
+
 <body>
     <container>
         <div class="containergroot">
             <div class = "h3"><h3>Alle aangemaakte batterijen</h3></div>
-            <div id="battery-list">Loading…</div>
+            <div id="user-list">Loading…</div>
             <script>
-                async function loadBatteries() {
+                async function loadUsers() {
                     try {
-                    const res = await fetch('http://127.0.0.1:8000/bat');
+                    const res = await fetch('http://127.0.0.1:8000/user');
                     const data = await res.json();
                     const html = data.map(b => `
                         <div class="data-item">
-                        <strong>Battery UID:</strong> ${b.batUID}<br>
-                        <strong>Created:</strong> ${b.createdAt}<br>
-                        <strong>Retired:</strong> ${b.retiredAt || '/'}
+                        <strong>Gebruikersnaam:</strong> ${b.username}<br>
+                        <strong>Paswoord:</strong> ${b.password}<br>
                         </div>
                     `).join('');
-                    document.getElementById('battery-list').innerHTML = html || '<p>No batteries found</p>';
+                    document.getElementById('user-list').innerHTML = html || '<p>No batteries found</p>';
                     } catch (e) {
-                    document.getElementById('battery-list').innerHTML = `<p style="color:red;">Error: ${e.message}</p>`;
+                    document.getElementById('userlist').innerHTML = `<p style="color:red;">Error: ${e.message}</p>`;
                     }
                 }
-                loadBatteries();
+                loadUsers();
             </script>
         </div>
-        <a href="../popUp/BatteryAdd.html" target="_blank" rel="noreferrer"><span class= "plus">✚</span></a>
+        <a href="../popUp/UserAdd.html" target="_blank" rel="noreferrer"><span class= "plus">✚</span></a>
     </container>
 </body>
+
 <body>
     <footer>
         hulp? vc081226@tsmmechelen.net | tsm | 6ICW | 2025-2026
