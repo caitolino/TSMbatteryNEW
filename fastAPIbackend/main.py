@@ -36,7 +36,6 @@ bat_col = db["BATTERIJEN"]
 tag_col = db["APRILTAGS"]   
 loc_col = db["LOCATIES/AUTOS"]
 assign_col = db["TAG_ASSIGNMENTS"]
-ad_col = db["admin_users"]
 user_col = db["users"]
 
 
@@ -74,10 +73,11 @@ def get_data():
     return data
 
 @app.get("/admin")
-def get_data():
+def get_admins():
+    """Return list of users with admin privileges."""
     if not getattr(app.state, "mongo_ok", False):
         raise HTTPException(status_code=503, detail="MongoDB not available")
-    data = list(ad_col.find({}, {"_id": 0}))
+    data = list(user_col.find({"admin": True}, {"_id": 0}))
     return data
 
 @app.get("/user")
@@ -154,6 +154,8 @@ class Assign (BaseModel):
 class User (BaseModel):
     username: str
     password: str
+    write: bool = False
+    admin: bool = False
 
 
 @app.post('/tags')
@@ -174,9 +176,14 @@ def add_data(assign: Assign):
     return assign_col
 @app.post('/user')
 def add_data(username: str = Form(...), password: str = Form(...)):
-    # hash the password before storing it
-    user_col.insert_one({"username": username, "password": hash_password(password)})
-    return {"message": "Leerling toegevoeg! Sluit dit venster en refresh de pagina om de aanpassingen te zien"}
+    # hash the password before storing it and default write access to False
+    user_col.insert_one({
+        "username": username,
+        "password": hash_password(password),
+        "write": False,
+        "admin": False,
+    })
+    return {"message": "Gebruiker toegevoegd! Sluit dit venster en refresh de pagina om de aanpassingen te zien"}
 
 
 
@@ -191,6 +198,14 @@ def verify_user(username: str, password: str) -> bool:
         return False
     return user["password"] == hash_password(password)
 
+
+def verify_admin(username: str) -> bool:
+    """Return True if the given user has admin: true."""
+    user = user_col.find_one({"username": username})
+    if not user:
+        return False
+    return bool(user.get("admin", False))
+
 security = HTTPBasic()
 def get_current_user(credentials: HTTPBasicCredentials = Depends(security)):
     if not verify_user(credentials.username, credentials.password):
@@ -200,5 +215,51 @@ def get_current_user(credentials: HTTPBasicCredentials = Depends(security)):
 @app.post("/login")
 def login(username: str = Form(...), password: str = Form(...)):
     if verify_user(username, password):
-        return {"message": "login gelukt!"}
+        # fetch the user record to know their write permission
+        user = user_col.find_one({"username": username}, {"_id": 0})
+        write_flag = bool(user.get("write", False))
+        admin_flag = verify_admin(username)
+        return {"message": "login gelukt!", "write": write_flag, "admin": admin_flag}
     raise HTTPException(status_code=401, detail="Invalid gebruikersnaam of paswoord")
+
+@app.post('/admin/set-write')
+def admin_set_write(target_username: str = Form(...), write: bool = Form(...), current_user: str = Depends(get_current_user)):
+    """Endpoint for admins to toggle write permission on any user."""
+    if not verify_admin(current_user):
+        raise HTTPException(status_code=403, detail="Not authorized")
+    result = user_col.update_one({"username": target_username}, {"$set": {"write": write}})
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="User not found")
+    return {"message": f"User {target_username} write set to {write}"}
+
+@app.post('/admin/set-admin')
+def admin_set_admin(target_username: str = Form(...), admin: bool = Form(...), current_user: str = Depends(get_current_user)):
+    """Endpoint for admins to toggle admin status on any user."""
+    if not verify_admin(current_user):
+        raise HTTPException(status_code=403, detail="Not authorized")
+    result = user_col.update_one({"username": target_username}, {"$set": {"admin": admin}})
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="User not found")
+    return {"message": f"User {target_username} admin set to {admin}"}
+
+@app.post("/admin/create-first")
+def create_first_admin(username: str = Form(...)):
+    """Bootstrap endpoint: creates the first admin. Once an admin exists, this endpoint is locked."""
+    admin_count = user_col.count_documents({"admin": True})
+    if admin_count > 0:
+        raise HTTPException(status_code=403, detail="Deze admin bestaat al, je kan het admin panel gebruiken om er meer aan te maken.")
+    
+    # Verify
+    user = user_col.find_one({"username": username})
+    if not user:
+        raise HTTPException(status_code=404, detail="Gebruiker bestaat niet. Je moet je eerst registreren..")
+    
+    #admin True
+    user_col.update_one({"username": username}, {"$set": {"admin": True}})
+    return {"message": f"{username} is nu een admin. Je kan je via de leerkracht knop in loggen."}
+
+
+# serve static files (HTML, JS, CSS) from the repository root
+from fastapi.staticfiles import StaticFiles
+app.mount("/", StaticFiles(directory="..", html=True), name="static")
+

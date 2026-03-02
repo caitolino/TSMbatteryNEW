@@ -10,7 +10,7 @@
 <style>body{background-color: #EEEEEE;}</style>
     <body>
         <div class="form">
-            <form action="http://127.0.0.1:8000/user" method="POST">
+            <form id="registerForm" action="http://127.0.0.1:8000/user" method="POST">
             <H2>LEERLINGEN</H2>
             <label for="username">gebruikersnaam:</label><br>
             <input type="text" name="username" placeholder="naam" required/><br>
@@ -19,5 +19,28 @@
             <button type="submit">Submit</button>
             </form>
         </div>
+    
+    
+    
+    <script>
+        document.getElementById('registerForm').addEventListener('submit', function(e) {
+            e.preventDefault();                       // don’t let the browser navigate
+            const form = this;
+            const data = new FormData(form);   
+            fetch(form.action, {
+                method: form.method,
+                body: data
+            }).then(response => {
+                if (response.ok) {
+                    // change the path to wherever batteriesread.html lives
+                    window.location.href = '../codesread/batteriesread.html';
+                } else {
+                    return response.text().then(txt => { throw new Error(txt); });
+                }
+            }).catch(err => {
+                alert('Registration failed: ' + err.message);
+            });
+        });
+    </script>
     </body>
 </html>

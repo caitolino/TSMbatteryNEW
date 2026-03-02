@@ -3,22 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Admin Login</title>
+    <link rel="stylesheet" href="../styles.css">
     <!-- comment -->
 </head>
 <body>
     <div id="logincontainer">
         <div class="form">
-            <form id="loginForm" action="#" method="POST">
-                <H2>LOGIN</H2>
+            <form id="adminLoginForm" action="#" method="POST">
+                <H2>ADMIN LOGIN</H2>
                 <label for="username">username:</label><br>
                 <input type="text" name="username" placeholder="naam" required /><br>
                 <label for="password">password:</label><br>
                 <input type="password" name="password" placeholder="password" required /><br>
                 <p><button type="submit">submit!</button></p>
-                <p>Nog geen gebruiker?
-                    <a href="./register.html">register</a>
+                <p>
+                    <a href="./create_first_admin.html">Create First Admin?</a>
                 </p>
             </form>
         </div>
@@ -26,7 +26,7 @@
 
 
     <script>
-        const form = document.getElementById("loginForm");
+        const form = document.getElementById("adminLoginForm");
         form.addEventListener("submit", async e => {
             e.preventDefault();
             const f = e.target;
@@ -40,19 +40,17 @@
             });
             const data = await resp.json();
             if (resp.ok) {
+                // check if admin
+                if (!data.admin) {
+                    alert("You are not an admin!");
+                    return;
+                }
                 // store basic auth credentials for later calls
                 const token = btoa(`${f.username.value}:${f.password.value}`);
                 localStorage.setItem('credentials', token);
                 localStorage.setItem("loggedInUser", f.username.value);
-                // redirect based on flags returned by backend
-                if (data.admin) {
-                    // send admins to the user management page
-                    location.href = "../codesadmin/leerlingen.html";
-                } else if (data.write) {
-                    location.href = "../codes/batteries.html";
-                } else {
-                    location.href = "../codesread/batteriesread.html";
-                }
+                // redirect to admin panel
+                location.href = "../codesadmin/leerlingen.html";
             } else {
                 alert("Login failed: " + (data.detail || resp.statusText));
             }

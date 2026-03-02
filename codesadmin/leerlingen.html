@@ -34,20 +34,63 @@
             <script>
                 async function loadUsers() {
                     try {
-                    const res = await fetch('http://127.0.0.1:8000/user');
+                    const headers = {};
+                    const creds = localStorage.getItem('credentials');
+                    if (creds) headers.Authorization = 'Basic ' + creds;
+                    const res = await fetch('http://127.0.0.1:8000/user', { headers });
                     const data = await res.json();
-                    const html = data.map(b => `
+                    const html = data.map(b => {
+                        const writeChecked = b.write ? 'checked' : '';
+                        const adminChecked = b.admin ? 'checked' : '';
+                        return `
                         <div class="data-item">
-                        <strong>Gebruikersnaam:</strong> ${b.username}<br>
-                        <strong>Paswoord:</strong> ${b.password}<br>
+                          <strong>Gebruikersnaam:</strong> ${b.username}<br>
+                          <strong>Paswoord:</strong> ${b.password}<br>
+                          <label>
+                            write access:
+                            <input type="checkbox" data-user="${b.username}" data-field="write" ${writeChecked} class="toggle-field">
+                          </label><br>
+                          <label>
+                            admin:
+                            <input type="checkbox" data-user="${b.username}" data-field="admin" ${adminChecked} class="toggle-field">
+                          </label>
                         </div>
-                    `).join('');
+                    `;
+                    }).join('');
                     document.getElementById('user-list').innerHTML = html || '<p>No batteries found</p>';
                     } catch (e) {
                     document.getElementById('userlist').innerHTML = `<p style="color:red;">Error: ${e.message}</p>`;
                     }
                 }
                 loadUsers();
+
+                // delegate change events for checkboxes
+                document.addEventListener('change', async e => {
+                    if (e.target.classList.contains('toggle-field')) {
+                        const username = e.target.getAttribute('data-user');
+                        const field = e.target.getAttribute('data-field');
+                        const value = e.target.checked;
+                        try {
+                            const endpoint = field === 'write' ? '/admin/set-write' : '/admin/set-admin';
+                            const headers = { 'Content-Type': 'application/x-www-form-urlencoded' };
+                            const creds = localStorage.getItem('credentials');
+                            if (creds) headers.Authorization = 'Basic ' + creds;
+                            const resp = await fetch(`http://127.0.0.1:8000${endpoint}`, {
+                                method: 'POST',
+                                headers,
+                                body: new URLSearchParams({ target_username: username, [field]: value })
+                            });
+                            if (!resp.ok) {
+                                const txt = await resp.text();
+                                throw new Error(txt);
+                            }
+                        } catch (err) {
+                            alert(`Failed to update ${field}: ` + err.message);
+                            // revert checkbox
+                            e.target.checked = !value;
+                        }
+                    }
+                });
             </script>
         </div>
         <a href="../popUp/UserAdd.html" target="_blank" rel="noreferrer"><span class= "plus">✚</span></a>

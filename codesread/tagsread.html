@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tags</title>
+    <link rel="stylesheet" href="../styles.css">
+    <!-- comment -->
+</head>
+<style>body{background-color: #EEEEEE;}</style>
+
+<body>
+    <header>
+        <h2>Tags</h2>
+        <nav>
+        <a href="../home.html"><img class="navbar" id="logo" src="../img/Logo.png" alt="tsm logo" style="height:50px; width:auto;"></a>
+        <ul>
+                <li><a class="navbar" href="batteriesread.html">batterijen</a></li>
+                <li><a class="navbar" href="wedstrijdenread.html">wedstrijden</a></li>
+                <li><a class="navbar" href="locatiesread.html">locaties</a></li>
+                <li><a class="navbar" href="tagsread.html">tags</a></li>
+            </ul>
+        </nav>
+    </header>
+</body>
+
+
+
+
+
+<body>
+    <div class="containergroot">
+        <div class = "h3"><h3>Alle aangemaakte tags</h3></div>
+        <div id="tags-list">Loading…</div>
+        <div id="tags-container"></div>
+      <script>
+      fetch('http://127.0.0.1:8000/tags')
+        .then(r => r.json())
+        .then(data => {
+          const html = data.map(tag => {
+            const assignmentsHtml = tag.assignments.length
+              ? tag.assignments.map(a => `
+                  <div class="assignment-item">
+                    <strong>Assigned ID:</strong> ${a.assignedId}<br>
+                    <strong>Valid From:</strong> ${a.validFrom}<br>
+                    <strong>Valid To:</strong> ${a.validTo}
+                  </div>
+                `).join('')
+              : 'None';
+
+            return `
+              <div class="data-item">
+                <strong>Tag ID:</strong> ${tag.tagId}<br>
+                <strong>Type:</strong> ${tag.type}<br>
+                <strong>Status:</strong> ${tag.active ? 'Active' : 'Inactive'}<br>
+                <p>
+                  <strong>Assignments:</strong>
+                  ${assignmentsHtml}
+                </p>
+              </div>
+            `;
+          }).join('');
+
+          document.getElementById('tags-container').innerHTML = html;
+        });
+      </script>
+    </div>
+</body>
+
+<body>
+    <footer>
+        hulp? vc081226@tsmmechelen.net | tsm | 6ICW | 2025-2026
+    </footer>
+</html>
