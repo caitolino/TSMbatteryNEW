@@ -10,16 +10,44 @@
 <body>
     <div id="logincontainer">
         <div class="form">
-            <form action=# method="POST">
+            <form id="loginForm" action="#" method="POST">
                 <H2>LOGIN</H2>
                 <label for="username">username:</label><br>
                 <input type="text" name="username" placeholder="naam" required /><br>
                 <label for="password">password:</label><br>
-                <input type="text" name="password" placeholder="password" required /><br>
+                <input type="password" name="password" placeholder="password" required /><br>
                 <p><button type="submit">submit!</button></p>
             </form>
         </div>
     </div>
+
+
+    <script>
+        const form = document.getElementById("loginForm");
+        form.addEventListener("submit", async e => {
+            e.preventDefault();
+            const f = e.target;
+            const resp = await fetch("http://127.0.0.1:8000/login", {
+                method: "POST",
+                headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                body: new URLSearchParams({
+                    username: f.username.value,
+                    password: f.password.value
+                })
+            });
+            const data = await resp.json();
+            if (resp.ok) {
+                // store basic auth credentials for later calls
+                const token = btoa(`${f.username.value}:${f.password.value}`);
+                localStorage.setItem('credentials', token);
+                localStorage.setItem("loggedInUser", f.username.value);
+                location.href = "../codes/batteries.html";
+            } else {
+                alert("Login failed: " + (data.detail || resp.statusText));
+            }
+        });
+    </script>
+
 </body>
 
 </html>

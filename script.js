@@ -4,7 +4,19 @@ async function fetchAndRender(endpoint, containerId) {
   if (!container) return;
   container.textContent = 'Loading...';
   try {
-    const res = await fetch(`http://127.0.0.1:8000/${endpoint}`);
+    // include auth header if the client has stored credentials/token
+    const headers = {};
+    const credentials = localStorage.getItem('credentials');
+    if (credentials) {
+      headers.Authorization = 'Basic ' + credentials; // base64 user:pass
+    }
+
+    const res = await fetch(`http://127.0.0.1:8000/${endpoint}`, { headers });
+    if (res.status === 401) {
+      // not logged in; send user to login form
+      location.href = '/popUp/login.html';
+      return;
+    }
     if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
     const data = await res.json();
     renderTable(container, data);

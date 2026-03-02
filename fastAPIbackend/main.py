@@ -1,12 +1,15 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi import Form
+from fastapi import Form, Depends
+from fastapi.security import HTTPBasic, HTTPBasicCredentials
+import hashlib
 from pymongo import MongoClient
 import logging
 import os
 from pydantic import BaseModel
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
+
 templates = Jinja2Templates(directory="templates")
 import hashlib
 
@@ -171,7 +174,31 @@ def add_data(assign: Assign):
     return assign_col
 @app.post('/user')
 def add_data(username: str = Form(...), password: str = Form(...)):
-    user_col.insert_one({"username": username, "password": password,})
+    # hash the password before storing it
+    user_col.insert_one({"username": username, "password": hash_password(password)})
     return {"message": "Leerling toegevoeg! Sluit dit venster en refresh de pagina om de aanpassingen te zien"}
 
 
+
+# login helpers – used by both creation and verification
+
+def hash_password(password: str) -> str:
+    return hashlib.sha256(password.encode("utf-8")).hexdigest()
+
+def verify_user(username: str, password: str) -> bool:
+    user = user_col.find_one({"username": username})
+    if not user:
+        return False
+    return user["password"] == hash_password(password)
+
+security = HTTPBasic()
+def get_current_user(credentials: HTTPBasicCredentials = Depends(security)):
+    if not verify_user(credentials.username, credentials.password):
+        raise HTTPException(status_code=401, detail="Invalid credentials")
+    return credentials.username
+
+@app.post("/login")
+def login(username: str = Form(...), password: str = Form(...)):
+    if verify_user(username, password):
+        return {"message": "login gelukt!"}
+    raise HTTPException(status_code=401, detail="Invalid gebruikersnaam of paswoord")
