@@ -28,10 +28,8 @@
 
 <body>
     <div class="containergroot">
-        <div class="titleplus">
-            <div class = "h3"><h3>Alle aangemaakte locaties/karts</h3></div>
-             <a href="../popUp/LocationAdd.html" target="_blank" rel="noreferrer"><span class= "plus">✚</span></a>
-        </div>
+        <div class = "h3"><h3>Alle aangemaakte locaties/karts</h3></div>
+        
         <div id="loc">Loading…</div>
         <script>
             fetch('http://127.0.0.1:8000/loc')
@@ -49,7 +47,10 @@
                 .catch(err => { document.getElementById('loc').innerHTML = `<p style="color:red;">Error: ${err}</p>`; });
         
         </script>
+        
     </div>
+    <a href="../popUp/LocationAdd.html" target="_blank" rel="noreferrer"><span class= "plus">✚</span></a>
+
     
 </body>
 

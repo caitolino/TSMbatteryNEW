@@ -21,13 +21,13 @@ app = FastAPI()
 # Enable CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Allow all origins (or specify ["http://127.0.0.1:8000", "file://"])
+    allow_origins=["*"],  
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# MongoDB connection (configurable via MONGO_URI env var)
+
 MONGO_URI = os.getenv("MONGO_URI", "mongodb+srv://Caitlin_db:vc081226@test.sht8tpb.mongodb.net/admin")
 
 client = MongoClient(MONGO_URI, serverSelectionTimeoutMS=5000)
@@ -105,7 +105,6 @@ def get_data():
 def get_data():
     if not getattr(app.state, "mongo_ok", False):
         raise HTTPException(status_code=503, detail="MongoDB not available")
-    #data = list(tag_col.find({}, {"_id": 0}))
     pipeline = [
         {
             "$lookup": {
@@ -118,10 +117,10 @@ def get_data():
     ]
     data = list(tag_col.aggregate(pipeline))
     for tag in data:
-        tag.pop("_id", None)  # remove tag _id
+        tag.pop("_id", None) 
         for assign in tag.get("assignments", []):
-            assign.pop("_id", None)      # remove assignment _id
-            assign.pop("tagId", None)    # remove assignment tagId if you don't want it
+            assign.pop("_id", None)    
+            assign.pop("tagId", None)    
 
     return data
 
@@ -176,7 +175,6 @@ def add_data(assign: Assign):
     return assign_col
 @app.post('/user')
 def add_data(username: str = Form(...), password: str = Form(...)):
-    # hash the password before storing it and default write access to False
     user_col.insert_one({
         "username": username,
         "password": hash_password(password),
@@ -186,8 +184,6 @@ def add_data(username: str = Form(...), password: str = Form(...)):
     return {"message": "Gebruiker toegevoegd! Sluit dit venster en refresh de pagina om de aanpassingen te zien"}
 
 
-
-# login helpers – used by both creation and verification
 
 def hash_password(password: str) -> str:
     return hashlib.sha256(password.encode("utf-8")).hexdigest()
@@ -215,7 +211,6 @@ def get_current_user(credentials: HTTPBasicCredentials = Depends(security)):
 @app.post("/login")
 def login(username: str = Form(...), password: str = Form(...)):
     if verify_user(username, password):
-        # fetch the user record to know their write permission
         user = user_col.find_one({"username": username}, {"_id": 0})
         write_flag = bool(user.get("write", False))
         admin_flag = verify_admin(username)
@@ -224,7 +219,6 @@ def login(username: str = Form(...), password: str = Form(...)):
 
 @app.post('/admin/set-write')
 def admin_set_write(target_username: str = Form(...), write: bool = Form(...), current_user: str = Depends(get_current_user)):
-    """Endpoint for admins to toggle write permission on any user."""
     if not verify_admin(current_user):
         raise HTTPException(status_code=403, detail="Not authorized")
     result = user_col.update_one({"username": target_username}, {"$set": {"write": write}})
@@ -234,29 +228,12 @@ def admin_set_write(target_username: str = Form(...), write: bool = Form(...), c
 
 @app.post('/admin/set-admin')
 def admin_set_admin(target_username: str = Form(...), admin: bool = Form(...), current_user: str = Depends(get_current_user)):
-    """Endpoint for admins to toggle admin status on any user."""
     if not verify_admin(current_user):
         raise HTTPException(status_code=403, detail="Not authorized")
     result = user_col.update_one({"username": target_username}, {"$set": {"admin": admin}})
     if result.matched_count == 0:
         raise HTTPException(status_code=404, detail="User not found")
     return {"message": f"User {target_username} admin set to {admin}"}
-
-@app.post("/admin/create-first")
-def create_first_admin(username: str = Form(...)):
-    """Bootstrap endpoint: creates the first admin. Once an admin exists, this endpoint is locked."""
-    admin_count = user_col.count_documents({"admin": True})
-    if admin_count > 0:
-        raise HTTPException(status_code=403, detail="Deze admin bestaat al, je kan het admin panel gebruiken om er meer aan te maken.")
-    
-    # Verify
-    user = user_col.find_one({"username": username})
-    if not user:
-        raise HTTPException(status_code=404, detail="Gebruiker bestaat niet. Je moet je eerst registreren..")
-    
-    #admin True
-    user_col.update_one({"username": username}, {"$set": {"admin": True}})
-    return {"message": f"{username} is nu een admin. Je kan je via de leerkracht knop in loggen."}
 
 
 # serve static files (HTML, JS, CSS) from the repository root

@@ -29,7 +29,7 @@
 <body>
     <container>
         <div class="containergroot">
-            <div class = "h3"><h3>Alle aangemaakte batterijen</h3></div>
+            <div class = "h3"><h3>Alle gebruikers</h3></div>
             <div id="user-list">Loading…</div>
             <script>
                 async function loadUsers() {
@@ -45,13 +45,12 @@
                         return `
                         <div class="data-item">
                           <strong>Gebruikersnaam:</strong> ${b.username}<br>
-                          <strong>Paswoord:</strong> ${b.password}<br>
                           <label>
-                            write access:
+                            schrijf rechten:
                             <input type="checkbox" data-user="${b.username}" data-field="write" ${writeChecked} class="toggle-field">
                           </label><br>
                           <label>
-                            admin:
+                            leerkracht:
                             <input type="checkbox" data-user="${b.username}" data-field="admin" ${adminChecked} class="toggle-field">
                           </label>
                         </div>
