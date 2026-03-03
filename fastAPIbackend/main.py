@@ -133,32 +133,32 @@ def get_data():
     data = list(assign_col.find({}, {"_id": 0}))
     return data
 
-
-
-@app.get("/tags")
+@app.get("/stat")
 def get_data():
     if not getattr(app.state, "mongo_ok", False):
         raise HTTPException(status_code=503, detail="MongoDB niet bereikbaar")
-    pipeline = [
-        {
-            "$lookup": {
-                "from": "",
-                "localField": "tagId",
-                "foreignField": "tagId",
-                "as": "assignments"
-            }
-        }
-    ]
-    data = list(tag_col.aggregate(pipeline))
-    for tag in data:
-        tag.pop("_id", None) 
-        for assign in tag.get("assignments", []):
-            assign.pop("_id", None)    
-            assign.pop("tagId", None)    
-
+    data = list(stat_col.find({}, {"_id": 0}))
     return data
 
+@app.get("/wed")
+def get_data():
+    if not getattr(app.state, "mongo_ok", False):
+        raise HTTPException(status_code=503, detail="MongoDB niet bereikbaar")
+    data = list(wed_col.find({}, {"_id": 0}))
+    return data
 
+class Stat(BaseModel):
+    batUID : str
+    timestamp : str
+    rawData : str
+    estimation : int
+    comment : str
+class Wed(BaseModel):
+    autoUID : str
+    batUID : str
+    timestamp : str
+    rawData : str
+    comment : str
 class Tag(BaseModel):
     tagId : int
     type : str
@@ -201,6 +201,15 @@ def add_data(type: str = Form(...), name: str = Form(...), comment: str = Form(.
 def add_data(assign: Assign):
     assign_col.insert_one(assign.dict())
     return assign_col
+@app.post('/stat')
+def add_data(batUID: str = Form(...), timestamp: str = Form(...),rawData: str = Form(...),estimation : int = Form(...), comment: str = Form(...)):
+    stat_col.insert_one({"batUID": batUID, "timestamp": timestamp, "rawData": rawData, "estimation" : estimation, "comment": comment})
+    return {"message": "Meetdata toegevoegd!Sluit dit venster en refresh de pagina om de aanpassingen te zien"}
+@app.post('/wed')
+def add_data(autoUID: str = Form(...), batUID: str = Form(...), timestamp: str = Form(...),rawData: str = Form(...), comment: str = Form(...)):
+    wed_col.insert_one({"autoUID" : autoUID, "batUID": batUID, "timestamp": timestamp, "rawData": rawData, "comment": comment})
+    return {"message": "Meetdata toegevoegd!Sluit dit venster en refresh de pagina om de aanpassingen te zien"}
+
 @app.post('/user')
 def add_data(username: str = Form(...), password: str = Form(...)):
     user_col.insert_one({
@@ -210,7 +219,6 @@ def add_data(username: str = Form(...), password: str = Form(...)):
         "admin": False,
     })
     return {"message": "Gebruiker toegevoegd! Sluit dit venster en refresh de pagina om de aanpassingen te zien"}
-
 
 
 def hash_password(password: str) -> str:
