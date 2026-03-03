@@ -81,9 +81,7 @@ header{
     margin: 0;
     position: relative;
 }
-.login{display:flex; flex-direction:row; column-gap:3px;display: inline-block;
-    margin: 0 auto;
-    max-width: 400px;}
+.login{display:flex; flex-direction:row; column-gap:3px;}
 
 #logo{ background-color: #6594B1; height:50px; margin:2px}
 #slogan{ background-color: #6594B1; margin-left: 8px; }
@@ -150,7 +148,4 @@ footer{
     color:#c39aba;
     outline: 2px solid #c39aba;
     display: inline-block;
-    background-color:rgba(209, 223, 233, 0.45);
-    margin: 0 auto;
-    max-width: 400px;
-}
+    background-color:rgba(209, 223, 233, 0.45);}

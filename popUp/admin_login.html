@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Leerkracht Login</title>
     <link rel="stylesheet" href="../styles.css">
-    <!-- comment -->
 </head>
+<style>body{background-color: #EEEEEE;}</style>
 <body>
     <div id="logincontainer">
         <div class="form">
@@ -37,16 +37,15 @@
             });
             const data = await resp.json();
             if (resp.ok) {
-                // check if admin
                 if (!data.admin) {
                     alert("You are not an admin!");
                     return;
                 }
-                // store basic auth credentials for later calls
+
                 const token = btoa(`${f.username.value}:${f.password.value}`);
                 localStorage.setItem('credentials', token);
                 localStorage.setItem("loggedInUser", f.username.value);
-                // redirect to admin panel
+
                 location.href = "../codesadmin/leerlingen.html";
             } else {
                 alert("Login failed: " + (data.detail || resp.statusText));
