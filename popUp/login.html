@@ -38,13 +38,10 @@
                 });
                 const data = await resp.json();
                 if (resp.ok) {
-                    // store basic auth credentials for later calls
                     const token = btoa(`${f.username.value}:${f.password.value}`);
                     localStorage.setItem('credentials', token);
                     localStorage.setItem("loggedInUser", f.username.value);
-                    // redirect based on flags returned by backend
                     if (data.admin) {
-                        // send admins to the user management page
                         location.href = "../codesadmin/leerlingen.html";
                     } else if (data.write) {
                         location.href = "../codes/batteries.html";
