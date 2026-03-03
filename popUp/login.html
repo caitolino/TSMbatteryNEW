@@ -4,27 +4,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
-    <link rel="stylesheet" href="styles.css">
+        <link rel="stylesheet" href="../styles.css">
     <!-- comment -->
 </head>
 <body>
     <div id="logincontainer">
         <div class="form">
-            <form id="loginForm" action="#" method="POST">
+            <form action="#" method="POST">
                 <H2>LOGIN</H2>
                 <label for="username">username:</label><br>
                 <input type="text" name="username" placeholder="naam" required /><br>
                 <label for="password">password:</label><br>
                 <input type="password" name="password" placeholder="password" required /><br>
                 <p><button type="submit">submit!</button></p>
-                <p>Nog geen gebruiker?
-                    <a href="./register.html">register</a>
-                </p>
+                <p>Nog geen gebruiker? <a href="./register.html">register</a></p>
             </form>
         </div>
     </div>
-
-
     <script>
         const form = document.getElementById("loginForm");
         form.addEventListener("submit", async e => {

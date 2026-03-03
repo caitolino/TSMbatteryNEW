@@ -236,7 +236,6 @@ def admin_set_admin(target_username: str = Form(...), admin: bool = Form(...), c
     return {"message": f"User {target_username} admin set to {admin}"}
 
 
-# serve static files (HTML, JS, CSS) from the repository root
 from fastapi.staticfiles import StaticFiles
 app.mount("/", StaticFiles(directory="..", html=True), name="static")
 
