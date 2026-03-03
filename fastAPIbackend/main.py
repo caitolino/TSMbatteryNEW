@@ -44,10 +44,10 @@ def startup_event():
     try:
         client.admin.command("ping")
         app.state.mongo_ok = True
-        logger.info("Connected to MongoDB at %s", MONGO_URI)
+        logger.info("Geconnecteerd met MongoDB op %s", MONGO_URI)
     except Exception as e:
         app.state.mongo_ok = False
-        logger.exception("Failed to connect to MongoDB: %s", e)
+        logger.exception("Gefaald om te connecteren met MongoDB: %s", e)
 
 
 @app.get("/health")
@@ -61,14 +61,14 @@ def test_db():
         names = client.list_database_names()
         return {"mongo_ok": True, "databases": names}
     except Exception as e:
-        logger.exception("MongoDB test failed")
+        logger.exception("MongoDB test gefaald")
         raise HTTPException(status_code=503, detail=f"MongoDB error: {e}")
 
 
 @app.get("/data")
 def get_data():
     if not getattr(app.state, "mongo_ok", False):
-        raise HTTPException(status_code=503, detail="MongoDB not available")
+        raise HTTPException(status_code=503, detail="MongoDB niet bereikbaar")
     data = list(bat_col.find({}, {"_id": 0}))
     return data
 
@@ -76,35 +76,35 @@ def get_data():
 def get_admins():
     """Return list of users with admin privileges."""
     if not getattr(app.state, "mongo_ok", False):
-        raise HTTPException(status_code=503, detail="MongoDB not available")
+        raise HTTPException(status_code=503, detail="MongoDB niet bereikbaar")
     data = list(user_col.find({"admin": True}, {"_id": 0}))
     return data
 
 @app.get("/user")
 def get_data():
     if not getattr(app.state, "mongo_ok", False):
-        raise HTTPException(status_code=503, detail="MongoDB not available")
+        raise HTTPException(status_code=503, detail="MongoDB niet bereikbaar")
     data = list(user_col.find({}, {"_id": 0}))
     return data
 
 @app.get("/bat")
 def get_data():
     if not getattr(app.state, "mongo_ok", False):
-        raise HTTPException(status_code=503, detail="MongoDB not available")
+        raise HTTPException(status_code=503, detail="MongoDB niet bereikbaar")
     data = list(bat_col.find({}, {"_id": 0}))
     return data
 
 @app.get("/loc")
 def get_data():
     if not getattr(app.state, "mongo_ok", False):
-        raise HTTPException(status_code=503, detail="MongoDB not available")
+        raise HTTPException(status_code=503, detail="MongoDB niet bereikbaar")
     data = list(loc_col.find({}, {"_id": 0}))
     return data
 
 @app.get("/tags")
 def get_data():
     if not getattr(app.state, "mongo_ok", False):
-        raise HTTPException(status_code=503, detail="MongoDB not available")
+        raise HTTPException(status_code=503, detail="MongoDB niet bereikbaar")
     pipeline = [
         {
             "$lookup": {
@@ -127,7 +127,7 @@ def get_data():
 @app.get("/assign")
 def get_data():
     if not getattr(app.state, "mongo_ok", False):
-        raise HTTPException(status_code=503, detail="MongoDB not available")
+        raise HTTPException(status_code=503, detail="MongoDB niet bereikbaar")
     data = list(assign_col.find({}, {"_id": 0}))
     return data
 
@@ -196,7 +196,6 @@ def verify_user(username: str, password: str) -> bool:
 
 
 def verify_admin(username: str) -> bool:
-    """Return True if the given user has admin: true."""
     user = user_col.find_one({"username": username})
     if not user:
         return False
@@ -205,7 +204,7 @@ def verify_admin(username: str) -> bool:
 security = HTTPBasic()
 def get_current_user(credentials: HTTPBasicCredentials = Depends(security)):
     if not verify_user(credentials.username, credentials.password):
-        raise HTTPException(status_code=401, detail="Invalid credentials")
+        raise HTTPException(status_code=401, detail="Invalide credentials")
     return credentials.username
 
 @app.post("/login")
@@ -215,12 +214,12 @@ def login(username: str = Form(...), password: str = Form(...)):
         write_flag = bool(user.get("write", False))
         admin_flag = verify_admin(username)
         return {"message": "login gelukt!", "write": write_flag, "admin": admin_flag}
-    raise HTTPException(status_code=401, detail="Invalid gebruikersnaam of paswoord")
+    raise HTTPException(status_code=401, detail="Invalide gebruikersnaam of paswoord")
 
 @app.post('/admin/set-write')
 def admin_set_write(target_username: str = Form(...), write: bool = Form(...), current_user: str = Depends(get_current_user)):
     if not verify_admin(current_user):
-        raise HTTPException(status_code=403, detail="Not authorized")
+        raise HTTPException(status_code=403, detail="Niet geautoriseerd")
     result = user_col.update_one({"username": target_username}, {"$set": {"write": write}})
     if result.matched_count == 0:
         raise HTTPException(status_code=404, detail="User not found")
@@ -229,10 +228,12 @@ def admin_set_write(target_username: str = Form(...), write: bool = Form(...), c
 @app.post('/admin/set-admin')
 def admin_set_admin(target_username: str = Form(...), admin: bool = Form(...), current_user: str = Depends(get_current_user)):
     if not verify_admin(current_user):
-        raise HTTPException(status_code=403, detail="Not authorized")
+        raise HTTPException(status_code=403, detail="Niet geautoriseerd")
+    if target_username == "caitlinvandenblock" and not admin:
+        raise HTTPException(status_code=403, detail="Kan geen leerkracht status van deze gebruiker verwijderen")
     result = user_col.update_one({"username": target_username}, {"$set": {"admin": admin}})
     if result.matched_count == 0:
-        raise HTTPException(status_code=404, detail="User not found")
+        raise HTTPException(status_code=404, detail="Gebruiker niet gevonden")
     return {"message": f"User {target_username} admin set to {admin}"}
 
 
