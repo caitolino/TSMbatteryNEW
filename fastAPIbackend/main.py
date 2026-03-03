@@ -37,6 +37,8 @@ tag_col = db["APRILTAGS"]
 loc_col = db["LOCATIES/AUTOS"]
 assign_col = db["TAG_ASSIGNMENTS"]
 user_col = db["users"]
+stat_col = db["MEETDATA_STATISCH"]
+wed_col = db["MEETDATA_WEDSTRIJD"]
 
 
 @app.on_event("startup")
@@ -130,6 +132,32 @@ def get_data():
         raise HTTPException(status_code=503, detail="MongoDB niet bereikbaar")
     data = list(assign_col.find({}, {"_id": 0}))
     return data
+
+
+
+@app.get("/tags")
+def get_data():
+    if not getattr(app.state, "mongo_ok", False):
+        raise HTTPException(status_code=503, detail="MongoDB niet bereikbaar")
+    pipeline = [
+        {
+            "$lookup": {
+                "from": "",
+                "localField": "tagId",
+                "foreignField": "tagId",
+                "as": "assignments"
+            }
+        }
+    ]
+    data = list(tag_col.aggregate(pipeline))
+    for tag in data:
+        tag.pop("_id", None) 
+        for assign in tag.get("assignments", []):
+            assign.pop("_id", None)    
+            assign.pop("tagId", None)    
+
+    return data
+
 
 class Tag(BaseModel):
     tagId : int

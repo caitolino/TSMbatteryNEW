@@ -129,7 +129,20 @@ footer{
     background-color: rgba(198, 219, 233, 0.45);
     display: inline-block;
     justify-content: center;
-    align-items: flex-start;
+    align-items: center;
+    color: #EEEEEE;
+    width: auto;
+    margin: 24px;
+    gap: 10px;
+    padding: 16px;
+    border: 3px solid rgba(198, 219, 233, 0.45);
+    border-radius: 10px;}
+.containerklein{
+    background-color: rgba(198, 219, 233, 0.45);
+    display: inline-flex;
+    flex-direction:column;
+    justify-content: center;
+    align-items: center;
     color: #EEEEEE;
     width: auto;
     margin: 24px;
@@ -147,5 +160,8 @@ footer{
     border:10px solid rgba(198, 219, 233, 0.45);
     color:#c39aba;
     outline: 2px solid #c39aba;
-    display: inline-block;
-    background-color:rgba(209, 223, 233, 0.45);}
+    display: inline-flex;
+    flex-direction:column;
+    background-color:rgba(209, 223, 233, 0.45);
+    justify-content: center;
+    align-items: center;}
