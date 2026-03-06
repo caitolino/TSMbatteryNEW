@@ -1,3 +1,4 @@
+#imports
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi import Form, Depends
@@ -9,6 +10,7 @@ import os
 from pydantic import BaseModel
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
+from fastapi_mqtt import FastMQTT, MQTTConfig
 
 templates = Jinja2Templates(directory="templates")
 import hashlib
@@ -18,7 +20,13 @@ logger = logging.getLogger(__name__)
 
 app = FastAPI()
 
-# Enable CORS
+mqtt_config = MQTTConfig()
+
+mqtt = FastMQTT(
+    config=mqtt_config
+)
+
+#CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],  
@@ -27,7 +35,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
+#variables (verander de connection string als er een nieuwe beheerder is)
 MONGO_URI = os.getenv("MONGO_URI", "mongodb+srv://Caitlin_db:vc081226@test.sht8tpb.mongodb.net/admin")
 
 client = MongoClient(MONGO_URI, serverSelectionTimeoutMS=5000)
@@ -40,7 +48,7 @@ user_col = db["users"]
 stat_col = db["MEETDATA_STATISCH"]
 wed_col = db["MEETDATA_WEDSTRIJD"]
 
-
+# app.on_event
 @app.on_event("startup")
 def startup_event():
     try:
@@ -52,6 +60,8 @@ def startup_event():
         logger.exception("Gefaald om te connecteren met MongoDB: %s", e)
 
 
+
+# app.get
 @app.get("/health")
 def health():
     return {"app": "ok", "mongo_ok": getattr(app.state, "mongo_ok", False)}
@@ -147,6 +157,8 @@ def get_data():
     data = list(wed_col.find({}, {"_id": 0}))
     return data
 
+
+#classes
 class Stat(BaseModel):
     batUID : str
     timestamp : str
@@ -185,6 +197,33 @@ class User (BaseModel):
     admin: bool = False
 
 
+
+# login
+def hash_password(password: str) -> str:
+    return hashlib.sha256(password.encode("utf-8")).hexdigest()
+
+def verify_user(username: str, password: str) -> bool:
+    user = user_col.find_one({"username": username})
+    if not user:
+        return False
+    return user["password"] == hash_password(password)
+
+
+def verify_admin(username: str) -> bool:
+    user = user_col.find_one({"username": username})
+    if not user:
+        return False
+    return bool(user.get("admin", False))
+
+security = HTTPBasic()
+def get_current_user(credentials: HTTPBasicCredentials = Depends(security)):
+    if not verify_user(credentials.username, credentials.password):
+        raise HTTPException(status_code=401, detail="Invalide credentials")
+    return credentials.username
+
+
+
+# app.post
 @app.post('/tags')
 def add_data(tag: Tag):
     tag_col.insert_one(tag.dict())
@@ -219,29 +258,6 @@ def add_data(username: str = Form(...), password: str = Form(...)):
         "admin": False,
     })
     return {"message": "Gebruiker toegevoegd! Sluit dit venster en refresh de pagina om de aanpassingen te zien"}
-
-
-def hash_password(password: str) -> str:
-    return hashlib.sha256(password.encode("utf-8")).hexdigest()
-
-def verify_user(username: str, password: str) -> bool:
-    user = user_col.find_one({"username": username})
-    if not user:
-        return False
-    return user["password"] == hash_password(password)
-
-
-def verify_admin(username: str) -> bool:
-    user = user_col.find_one({"username": username})
-    if not user:
-        return False
-    return bool(user.get("admin", False))
-
-security = HTTPBasic()
-def get_current_user(credentials: HTTPBasicCredentials = Depends(security)):
-    if not verify_user(credentials.username, credentials.password):
-        raise HTTPException(status_code=401, detail="Invalide credentials")
-    return credentials.username
 
 @app.post("/login")
 def login(username: str = Form(...), password: str = Form(...)):
