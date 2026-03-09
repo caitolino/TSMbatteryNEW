@@ -10,7 +10,7 @@ import os
 from pydantic import BaseModel
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
-from fastapi_mqtt import FastMQTT, MQTTConfig
+#from fastapi_mqtt import FastMQTT, MQTTConfig
 
 templates = Jinja2Templates(directory="templates")
 import hashlib
@@ -20,11 +20,14 @@ logger = logging.getLogger(__name__)
 
 app = FastAPI()
 
+'''
 mqtt_config = MQTTConfig()
 
 mqtt = FastMQTT(
     config=mqtt_config
 )
+'''
+
 
 #CORS
 app.add_middleware(
