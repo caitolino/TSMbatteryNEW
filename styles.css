@@ -10,6 +10,22 @@ body{
     margin: 0;
     padding-top: var(--header-height);
     padding-bottom: var(--footer-height);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: calc(100vh - var(--header-height) - var(--footer-height)); /* Adjust for fixed header/footer */
+    background-image: url(./img/background.jpg);
+}
+body.formbg{
+     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding-top: var(--header-height);
+    padding-bottom: var(--footer-height);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: calc(100vh - var(--header-height) - var(--footer-height)); /* Adjust for fixed header/footer */
+    background-image: url(./img/achtergrond.jpg);
 }
 
 
@@ -41,7 +57,9 @@ a{text-decoration: none;}
     padding: 6px 10px;
 }
 .navbar:hover{background-color:#EEEEEE !important; border:2px solid #EEEEEE}
-
+#leerkracht:hover{background-color:#bcd9eb !important; border:2px solid #bcd9eb; color:#6594B1;}
+#leerling:hover{background-color:#f3d1ec !important; border:2px solid #f3d1ec; color:#DDAED3;}
+.plus:hover{background-color:#f3d1ec !important; border:2px solid #f3d1ec; color:#DDAED3;}
 
 header{
     display:flex;
@@ -69,6 +87,8 @@ header{
     border:2px solid #DDAED3;
     margin: 0;
     position: relative;
+    border-radius: 3px;
+    padding: 3px 5px;
 }
 
 #leerkracht{
@@ -80,6 +100,8 @@ header{
     border:2px solid #6594B1;
     margin: 0;
     position: relative;
+    border-radius: 3px;
+    padding: 3px 5px;
 }
 .login{display:flex; flex-direction:row; column-gap:3px;}
 
@@ -140,7 +162,7 @@ footer{
 
 .containerklein{
     background-color: rgba(198, 219, 233, 0.45);
-    display: inline-flex;
+    display: inline-block;
     flex-direction:column;
     justify-content: center;
     align-items: center;
@@ -161,7 +183,7 @@ footer{
     border:10px solid rgba(198, 219, 233, 0.45);
     color:#c39aba;
     outline: 2px solid #c39aba;
-    display: inline-flex;
+    display: flex;
     flex-direction:column;
     background-color:rgba(209, 223, 233, 0.45);
     justify-content: center;
