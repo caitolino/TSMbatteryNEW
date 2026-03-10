@@ -38,8 +38,12 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-#variables (verander de connection string als er een nieuwe beheerder is)
-MONGO_URI = os.getenv("MONGO_URI", "mongodb+srv://Caitlin_db:vc081226@test.sht8tpb.mongodb.net/admin")
+# variables (verander de connection string als er een nieuwe beheerder is)
+MONGO_URI = os.getenv("MONGO_URI","mongodb://admin:2560K3ss3l@89.167.92.181:27017/?authSource=admin",)
+
+if not MONGO_URI:
+    raise RuntimeError("MONGO_URI environment variable must be set")
+
 
 client = MongoClient(MONGO_URI, serverSelectionTimeoutMS=5000)
 db = client["collected_data"]
@@ -254,6 +258,12 @@ def add_data(autoUID: str = Form(...), batUID: str = Form(...), timestamp: str =
 
 @app.post('/user')
 def add_data(username: str = Form(...), password: str = Form(...)):
+    if user_col.find_one({"username": username}):
+        raise HTTPException(
+            status_code=400,
+            detail="Gebruikersnaam bestaat al!",
+        )
+
     user_col.insert_one({
         "username": username,
         "password": hash_password(password),
