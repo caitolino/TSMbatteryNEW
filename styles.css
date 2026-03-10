@@ -166,3 +166,11 @@ footer{
     background-color:rgba(209, 223, 233, 0.45);
     justify-content: center;
     align-items: center;}
+.bigheader{
+    margin:2px;
+    display:flex-inline;
+    flex-direction:row;
+}
+.title{
+    justify-content:left;
+}
