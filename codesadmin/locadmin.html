@@ -42,7 +42,7 @@
                     const renderItems = (filter) => {
                         let filteredData = data; // Default to all
                         if (filter === 'locatie') {
-                            filteredData = data.filter(item => item.type === 'location');
+                            filteredData = data.filter(item => item.type === 'locatie');
                         } else if (filter === 'kart') {
                             filteredData = data.filter(item => item.type === 'kart');
                         }
