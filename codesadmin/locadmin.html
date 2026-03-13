@@ -36,23 +36,51 @@
             fetch('http://127.0.0.1:8000/loc')
                 .then(r => r.json())
                 .then(data => {
-                const html = data.map(item => `
-                    <div class="data-item">
-                    <strong>Location UID:</strong> ${item.locatieUID}<br>
-                    <strong>Type:</strong> ${item.type}<br>
-                    <strong>Comment:</strong> ${item.comment}
-                    </div>
-                `).join('');
-                document.getElementById('loc').innerHTML = html || '<p>No locations found</p>';
+                    console.log('Data loaded:', data); // Debug: check if data is received
+                    window.allItems = data;
+
+                    const renderItems = (filter) => {
+                        let filteredData = data; // Default to all
+                        if (filter === 'locatie') {
+                            filteredData = data.filter(item => item.type === 'location');
+                        } else if (filter === 'kart') {
+                            filteredData = data.filter(item => item.type === 'kart');
+                        }
+
+                        console.log('Filtered data for', filter, ':', filteredData); // Debug: check filtering
+                        const html = filteredData.map(item => `
+                            <div class="data-item">
+                            <strong>Location UID:</strong> ${item.locatieUID}<br>
+                            <strong>Type:</strong> ${item.type}<br>
+                            <strong>Comment:</strong> ${item.comment}
+                            </div>
+                        `).join('');
+                        document.getElementById('loc').innerHTML = html || '<p>No locations found</p>';
+                    };
+
+                    renderItems('geen');
+                    document.getElementById('lk').addEventListener('change', (event) => {
+                        console.log('Select changed to:', event.target.value); // Debug: check select changes
+                        renderItems(event.target.value);
+                    });
                 })
-                .catch(err => { document.getElementById('loc').innerHTML = `<p style="color:red;">Error: ${err}</p>`; });
-        
+                .catch(err => { 
+                    console.error('Error:', err); // Debug: check for fetch errors
+                    document.getElementById('loc').innerHTML = `<p style="color:red;">Error: ${err}</p>`; 
+                });
         </script>
         
     </div>
-    <a href="../popUp/LocationAdd.html" target="_blank" rel="noreferrer"><span class= "plus">✚</span></a>
-
-    
+    <div class="containergroot"><a href="../popUp/LocationAdd.html" target="_blank" rel="noreferrer"><span class= "plus">✚</span></a></div>
+    <div class="containergroot">
+        <a style="color:#DDAED3"><label for="cars">Filter:</label>
+        <select name="locatie/kart" id="lk">
+        <option value="geen">geen</option>
+        <option value="locatie">locatie</option>
+        <option value="kart">kart</option>
+        </select>
+        </a>
+    </div>
 </body>
 
 <body>

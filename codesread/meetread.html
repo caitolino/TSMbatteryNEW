@@ -55,35 +55,6 @@
     
     
     
-        <div class="containergroot">
-            <div class = "h3"><h3>Wedstrijd meetdata</h3></div>
-            <div id="wed-list">Loading…</div>
-            <script>
-                async function loadWed() {
-                    try {
-                    const res = await fetch('http://127.0.0.1:8000/wed');
-                    const data = await res.json();
-                    const html = data.map(wed => `
-                        <div class="data-item">
-                        <strong>Auto UID:</strong> ${wed.autoUID}<br>
-                        <strong>Bat UID:</strong> ${wed.batUID}<br>
-                        <strong>Time stamp:</strong> ${wed.timestamp || '/'}
-                        <strong>RawData:</strong> ${wed.rawData || '/'}
-                        <strong>Comment:</strong> ${wed.comment || '/'}
-                        </div>
-                    `).join('');
-                    document.getElementById('wed-list').innerHTML = html || '<p>No batteries found</p>';
-                    } catch (e) {
-                    document.getElementById('wed-list').innerHTML = `<p style="color:red;">Error: ${e.message}</p>`;
-                    }
-                }
-                loadWed();
-            </script>
-        </div>
-        <a href="../popUp/WedAdd.html" target="_blank" rel="noreferrer"><span class= "plus">✚</span></a>
-   
-    
-    
     </container>
 </body>
 <body>

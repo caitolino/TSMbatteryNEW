@@ -38,14 +38,16 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# variables (verander de connection string als er een nieuwe beheerder is)
-MONGO_URI = os.getenv("MONGO_URI","mongodb://admin:2560K3ss3l@89.167.92.181:27017/?authSource=admin",)
+MONGO_URI = "mongodb://admin:2560K3ss3l@89.167.92.181:27017/collected_data?authSource=admin"
+
+
+logger.info("startup: MONGO_URI = %r", MONGO_URI)
 
 if not MONGO_URI:
     raise RuntimeError("MONGO_URI environment variable must be set")
 
-
 client = MongoClient(MONGO_URI, serverSelectionTimeoutMS=5000)
+
 db = client["collected_data"]
 bat_col = db["BATTERIJEN"]
 tag_col = db["APRILTAGS"]   
@@ -53,7 +55,6 @@ loc_col = db["LOCATIES/AUTOS"]
 assign_col = db["TAG_ASSIGNMENTS"]
 user_col = db["users"]
 stat_col = db["MEETDATA_STATISCH"]
-wed_col = db["MEETDATA_WEDSTRIJD"]
 
 # app.on_event
 @app.on_event("startup")
@@ -78,7 +79,15 @@ def health():
 def test_db():
     try:
         names = client.list_database_names()
-        return {"mongo_ok": True, "databases": names}
+        info = {
+            "mongo_ok": True,
+            "databases": names,
+            # expose a little debug info so you can see which address the
+            # driver actually used (this is what gets resolved from the URI)
+            "client_address": getattr(client, "address", None),
+            "mongo_uri": MONGO_URI,
+        }
+        return info
     except Exception as e:
         logger.exception("MongoDB test gefaald")
         raise HTTPException(status_code=503, detail=f"MongoDB error: {e}")
@@ -157,12 +166,6 @@ def get_data():
     data = list(stat_col.find({}, {"_id": 0}))
     return data
 
-@app.get("/wed")
-def get_data():
-    if not getattr(app.state, "mongo_ok", False):
-        raise HTTPException(status_code=503, detail="MongoDB niet bereikbaar")
-    data = list(wed_col.find({}, {"_id": 0}))
-    return data
 
 
 #classes
@@ -171,12 +174,6 @@ class Stat(BaseModel):
     timestamp : str
     rawData : str
     estimation : int
-    comment : str
-class Wed(BaseModel):
-    autoUID : str
-    batUID : str
-    timestamp : str
-    rawData : str
     comment : str
 class Tag(BaseModel):
     tagId : int
@@ -250,10 +247,6 @@ def add_data(assign: Assign):
 @app.post('/stat')
 def add_data(batUID: str = Form(...), timestamp: str = Form(...),rawData: str = Form(...),estimation : int = Form(...), comment: str = Form(...)):
     stat_col.insert_one({"batUID": batUID, "timestamp": timestamp, "rawData": rawData, "estimation" : estimation, "comment": comment})
-    return {"message": "Meetdata toegevoegd!Sluit dit venster en refresh de pagina om de aanpassingen te zien"}
-@app.post('/wed')
-def add_data(autoUID: str = Form(...), batUID: str = Form(...), timestamp: str = Form(...),rawData: str = Form(...), comment: str = Form(...)):
-    wed_col.insert_one({"autoUID" : autoUID, "batUID": batUID, "timestamp": timestamp, "rawData": rawData, "comment": comment})
     return {"message": "Meetdata toegevoegd!Sluit dit venster en refresh de pagina om de aanpassingen te zien"}
 
 @app.post('/user')
