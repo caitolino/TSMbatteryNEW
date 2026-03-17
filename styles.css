@@ -113,6 +113,7 @@ footer{
 
 .container{
     display: flex;
+    flex-direction: row;
     justify-content: center;
     align-items: center;
     color: #EEEEEE;
@@ -132,8 +133,7 @@ footer{
     margin: 10px 0; 
     background-color: #DDAED3; 
     border-radius: 5px;
-    width: 100%;
-    float: left; }
+    width: auto;}
 .h3{color:#6594B1}
 
 .containergroot{
@@ -142,7 +142,6 @@ footer{
     justify-content: center;
     align-items: center;
     color: #EEEEEE;
-    width: auto;
     margin: 24px;
     gap: 10px;
     padding: 16px;
