@@ -34,23 +34,24 @@
             fetch('http://127.0.0.1:8000/loc')
                 .then(r => r.json())
                 .then(data => {
-                    console.log('Data loaded:', data); // Debug: check if data is received
+                    console.log('Data loaded:', data);
                     window.allItems = data;
 
                     const renderItems = (filter) => {
-                        let filteredData = data; // Default to all
+                        let filteredData = data;
                         if (filter === 'locatie') {
-                            filteredData = data.filter(item => item.type === 'locatie');
+                            filteredData = data.filter(l => l.type === 'locatie');
                         } else if (filter === 'kart') {
-                            filteredData = data.filter(item => item.type === 'kart');
+                            filteredData = data.filter(l => l.type === 'kart');
                         }
 
                         console.log('Filtered data for', filter, ':', filteredData); // Debug: check filtering
-                        const html = filteredData.map(item => `
+                        const html = filteredData.map(l => `
                             <div class="data-item">
-                            <strong>Location UID:</strong> ${item.locatieUID}<br>
-                            <strong>Type:</strong> ${item.type}<br>
-                            <strong>Comment:</strong> ${item.comment}
+                            <strong>Location UID:</strong> ${l.locatieUID}<br>
+                            <strong>Type:</strong> ${l.type}<br>
+                            <strong>User:</strong> ${l.user}<br>
+                            <strong>Comment:</strong> ${l.comment}
                             </div>
                         `).join('');
                         document.getElementById('loc').innerHTML = html || '<p>No locations found</p>';

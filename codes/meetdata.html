@@ -41,9 +41,10 @@
                         <div class="data-item">
                         <strong>Bat UID:</strong> ${stat.batUID}<br>
                         <strong>Timestamp:</strong> ${stat.timestamp}<br>
-                        <strong>RawData:</strong> ${stat.rawData || '/'}
-                        <strong>Estimation:</strong> ${stat.estimation || '/'}
-                        <strong>Comment:</strong> ${stat.comment || '/'}
+                        <strong>RawData:</strong> ${stat.rawData}<br>
+                        <strong>Estimation:</strong> ${stat.estimation}<br>
+                        <strong>User:</strong> ${stat.user}<br>
+                        <strong>Comment:</strong> ${stat.comment}
                         </div>
                     `).join('');
                     document.getElementById('stat-list').innerHTML = html || '<p>No batteries found</p>';

@@ -29,7 +29,10 @@
 <body>
     <container>
         <div class="containergroot">
-            <div class = "h3"><h3>Alle aangemaakte batterijen</h3></div>
+            <div class="titleplus">
+                <div class = "h3"><h3>Alle aangemaakte batterijen</h3></div>
+                <a href="../popUp/BatteryAdd.html" target="_blank" rel="noreferrer"><span class="plus">✚</span></a>
+            </div>
             <div id="battery-list">Loading…</div>
             <script>
                 async function loadBatteries() {
@@ -41,6 +44,7 @@
                         <strong>Battery UID:</strong> ${b.batUID}<br>
                         <strong>Created:</strong> ${b.createdAt}<br>
                         <strong>Retired:</strong> ${b.retiredAt}<br>
+                        <strong>User:</strong> ${b.user}<br>
                         <strong>Comment:</strong> ${b.comment || '/'}
                         </div>
                     `).join('');
@@ -52,7 +56,6 @@
                 loadBatteries();
             </script>
         </div>
-        <a href="../popUp/BatteryAdd.html" target="_blank" rel="noreferrer"><span class= "plus">✚</span></a>
     </container>
 </body>
 <body>

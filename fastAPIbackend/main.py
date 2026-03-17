@@ -173,6 +173,7 @@ class Stat(BaseModel):
     timestamp : str
     rawData : str
     estimation : int
+    user : str
     comment : str
 class Tag(BaseModel):
     tagId : int
@@ -181,11 +182,13 @@ class Tag(BaseModel):
 class Loc(BaseModel):
     type : str
     name : str
+    user : str
     comment : str
 class Bat(BaseModel):
     createdAt : str
     retiredAt : str
     batUID : str
+    user : str
     comment : str
 class Assign (BaseModel):
     tagId : int
@@ -232,20 +235,20 @@ def add_data(tag: Tag):
     tag_col.insert_one(tag.dict())
     return tag_col
 @app.post('/bat')
-def add_data(batUID: str = Form(...), comment: str = Form(...)):
-    bat_col.insert_one({"createdAt": str((datetime.utcnow() + timedelta(hours=1)).isoformat()), "retiredAt": "/", "batUID": batUID, "comment": comment})
+def add_data(batUID: str = Form(...), current_user: str = Depends(get_current_user), comment: str = Form(...)):
+    bat_col.insert_one({"createdAt": str((datetime.utcnow() + timedelta(hours=1)).isoformat()), "retiredAt": "/", "batUID": batUID, "user" : current_user, "comment": comment})
     return {"message": "Batterij toegevoegd!Sluit dit venster en refresh de pagina om de aanpassingen te zien"}
 @app.post('/loc')
-def add_data(type: str = Form(...), name: str = Form(...), comment: str = Form(...)):
-    loc_col.insert_one({"type": type, "name": name, "comment": comment})
+def add_data(type: str = Form(...), name: str = Form(...), current_user: str = Depends(get_current_user), comment: str = Form(...)):
+    loc_col.insert_one({"type": type, "name": name, "user": current_user, "comment": comment})
     return {"message": "Locatie toegevoeg! Sluit dit venster en refresh de pagina om de aanpassingen te zien"}
 @app.post('/assign')
 def add_data(assign: Assign):
     assign_col.insert_one(assign.dict())
     return assign_col
 @app.post('/stat')
-def add_data(batUID: str = Form(...),rawData: str = Form(...),estimation : int = Form(...), comment: str = Form(...)):
-    stat_col.insert_one({"batUID": batUID, "timestamp": str((datetime.utcnow() + timedelta(hours=1)).isoformat()), "rawData": rawData, "estimation" : estimation, "comment": comment})
+def add_data(batUID: str = Form(...),rawData: str = Form(...),estimation : int = Form(...), current_user: str = Depends(get_current_user), comment: str = Form(...)):
+    stat_col.insert_one({"batUID": batUID, "timestamp": str((datetime.utcnow() + timedelta(hours=1)).isoformat()), "rawData": rawData, "estimation" : estimation, "user": current_user, "comment": comment})
     return {"message": "Meetdata toegevoegd!Sluit dit venster en refresh de pagina om de aanpassingen te zien"}
 
 @app.post('/user')

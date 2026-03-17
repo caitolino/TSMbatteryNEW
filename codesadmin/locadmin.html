@@ -29,7 +29,10 @@
 
 <body>
     <div class="containergroot">
-        <div class = "h3"><h3>Alle aangemaakte locaties/karts</h3></div>
+        <div class="titleplus">
+            <div class = "h3"><h3>Alle aangemaakte locaties/karts</h3></div>
+            <a href="../popUp/LocationAdd.html" target="_blank" rel="noreferrer"><span class="plus">✚</span></a>
+        </div>
         
         <div id="loc">Loading…</div>
         <script>
@@ -52,6 +55,8 @@
                             <div class="data-item">
                             <strong>Location UID:</strong> ${item.locatieUID}<br>
                             <strong>Type:</strong> ${item.type}<br>
+                            <strong>User:</strong> ${item.user}<br>
+                            <strong>User:</strong> ${item.user}<br>
                             <strong>Comment:</strong> ${item.comment}
                             </div>
                         `).join('');
@@ -71,7 +76,6 @@
         </script>
         
     </div>
-    <div class="containergroot"><a href="../popUp/LocationAdd.html" target="_blank" rel="noreferrer"><span class= "plus">✚</span></a></div>
     <div class="containergroot">
         <a style="color:#DDAED3"><label for="cars">Filter:</label>
         <select name="locatie/kart" id="lk">
