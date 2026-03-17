@@ -3,4 +3,4 @@ uvicorn[standard]
 pymongo
 jinja2
 python-multipart
-fastapi-mqtt
+python-dotenv

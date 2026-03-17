@@ -19,7 +19,7 @@
                 <li><a class="navbar" href="wedstrijdenread.html">wedstrijden</a></li>
                 <li><a class="navbar" href="locatiesread.html">locaties</a></li>
                 <li><a class="navbar" href="tagsread.html">tags</a></li>
-                <li><a class="navbar" href="meetdadmin.html">meetdata</a></li>
+                <li><a class="navbar" href="meetread.html">meetdata</a></li>
             </ul>
         </nav>
     </header>
@@ -38,7 +38,8 @@
                         <div class="data-item">
                         <strong>Battery UID:</strong> ${b.batUID}<br>
                         <strong>Created:</strong> ${b.createdAt}<br>
-                        <strong>Retired:</strong> ${b.retiredAt || '/'}
+                        <strong>Retired:</strong> ${b.retiredAt}<br>
+                        <strong>Comment:</strong> ${b.comment || '/'}
                         </div>
                     `).join('');
                     document.getElementById('battery-list').innerHTML = html || '<p>No batteries found</p>';

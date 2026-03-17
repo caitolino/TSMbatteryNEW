@@ -10,7 +10,8 @@ import os
 from pydantic import BaseModel
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
-#from fastapi_mqtt import FastMQTT, MQTTConfig
+from dotenv import load_dotenv
+
 
 templates = Jinja2Templates(directory="templates")
 import hashlib
@@ -18,15 +19,9 @@ import hashlib
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+load_dotenv()
+
 app = FastAPI()
-
-'''
-mqtt_config = MQTTConfig()
-
-mqtt = FastMQTT(
-    config=mqtt_config
-)
-'''
 
 
 #CORS
@@ -38,7 +33,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-MONGO_URI = "mongodb://admin:2560K3ss3l@89.167.92.181:27017/collected_data?authSource=admin"
+MONGO_URI = os.getenv("MONGO_URI")
 
 
 logger.info("startup: MONGO_URI = %r", MONGO_URI)
@@ -120,6 +115,12 @@ def get_data():
     if not getattr(app.state, "mongo_ok", False):
         raise HTTPException(status_code=503, detail="MongoDB niet bereikbaar")
     data = list(bat_col.find({}, {"_id": 0}))
+
+    # Normalize legacy documents that accidentally used the misspelled key "reiredAt".
+    for item in data:
+        if "reiredAt" in item and "retiredAt" not in item:
+            item["retiredAt"] = item.pop("reiredAt")
+
     return data
 
 @app.get("/loc")
@@ -234,7 +235,9 @@ def add_data(tag: Tag):
     return tag_col
 @app.post('/bat')
 def add_data(createdAt: str = Form(...), retiredAt: str = Form(...),batUID: str = Form(...), comment: str = Form(...)):
-    bat_col.insert_one({"createdAt": createdAt, "reiredAt": retiredAt, "batUID": batUID, "comment": comment})
+    # NOTE: the key name must match what the frontend expects ("retiredAt").
+    # Older records may still have the misspelled field "reiredAt".
+    bat_col.insert_one({"createdAt": createdAt, "retiredAt": retiredAt, "batUID": batUID, "comment": comment})
     return {"message": "Batterij toegevoegd!Sluit dit venster en refresh de pagina om de aanpassingen te zien"}
 @app.post('/loc')
 def add_data(type: str = Form(...), name: str = Form(...), comment: str = Form(...)):
