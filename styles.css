@@ -124,7 +124,7 @@ footer{
     padding: 16px;
 }
 
-.data-item{ display: flex; 
+.data-item{
     flex-direction:column; 
     justify-content:center; 
     align-items: flex-start; 

@@ -3,6 +3,7 @@
 curl http://127.0.0.1:8000/health
 
 Test-Path .venv
+ 
 
 cd c:\Users\CaitlinVanDenBlock\Documents\TSMgithub\fastAPIbackend
 .\.venv\Scripts\Activate.ps1
