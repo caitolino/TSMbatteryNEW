@@ -97,7 +97,6 @@ def get_data():
 
 @app.get("/admin")
 def get_admins():
-    """Return list of users with admin privileges."""
     if not getattr(app.state, "mongo_ok", False):
         raise HTTPException(status_code=503, detail="MongoDB niet bereikbaar")
     data = list(user_col.find({"admin": True}, {"_id": 0}))

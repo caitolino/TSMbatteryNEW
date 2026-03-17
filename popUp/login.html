@@ -39,6 +39,10 @@
                     });
                     const data = await resp.json();
                     if (resp.ok) {
+                        if(data.admin) {
+                            alert("Log je in als leerkracht");
+                            return;
+                        }
                         const token = btoa(`${f.username.value}:${f.password.value}`);
                         localStorage.setItem('credentials', token);
                         localStorage.setItem("loggedInUser", f.username.value);
