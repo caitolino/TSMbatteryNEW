@@ -51,6 +51,7 @@ loc_col = db["LOCATIES/AUTOS"]
 assign_col = db["TAG_ASSIGNMENTS"]
 user_col = db["users"]
 stat_col = db["MEETDATA_STATISCH"]
+wed_col = db["WEDSTRIJD"]
 
 # app.on_event
 @app.on_event("startup")
@@ -165,6 +166,12 @@ def get_data():
     data = list(stat_col.find({}, {"_id": 0}))
     return data
 
+@app.get("/wed")
+def get_data():
+    if not getattr(app.state, "mongo_ok", False):
+        raise HTTPException(status_code=503, detail="MongoDB niet bereikbaar")
+    data = list(wed_col.find({}, {"_id": 0}))
+    return data
 
 
 #classes
