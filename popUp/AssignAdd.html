@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tag Assignments</title>
+    <link rel="stylesheet" href="../styles.css">
+</head>
+<style>body{background-color: #EEEEEE;background-image: url(../img/bb.jpeg.png);}</style>
+<body>
+  <div class="form">
+    <form action="http://127.0.0.1:8000/assign" method="POST">
+      <H2>STATISCHE DATA</H2>
+      <label for="tagId">Tag ID:</label><br>
+      <input type="text" name="tagId" placeholder="id" required/><br>
+      <label for="type">Type:</label><br>
+      <input type="text" name="type" placeholder="type" required/><br>
+      <label for="assignedId">ID:</label><br>
+      <input type="text" name="assignedId" placeholder="ID" required/><br>
+      <button type="submit">Submit</button>
+    </form>
+  </div>
+</body>
+</html>

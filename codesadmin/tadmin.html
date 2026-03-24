@@ -47,7 +47,7 @@ fetch('http://127.0.0.1:8000/tags')
               <strong>Assigned ID:</strong> ${a.assignedId}<br>
               <strong>Valid From:</strong> ${a.validFrom}<br>
               <strong>Valid To:</strong> ${a.validTo}
-            </div>
+              </div>
           `).join('')
         : 'None';
 
@@ -56,7 +56,9 @@ fetch('http://127.0.0.1:8000/tags')
           <strong>Tag ID:</strong> ${tag.tagId}<br>
           <strong>Type:</strong> ${tag.type}<br>
           <strong>Status:</strong> ${tag.active ? 'Active' : 'Inactive'}<br>
-          <strong>Assignments:</strong><br>
+          <strong>Assignments:</strong>
+          <a href="../popUp/AssignAdd.html" target="_blank" rel="noreferrer"><span class="tagassign">✚</span></a>
+
           ${assignmentsHtml}
         </div>
       `;

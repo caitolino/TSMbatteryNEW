@@ -239,8 +239,9 @@ def get_current_user(credentials: HTTPBasicCredentials = Depends(security)):
 # app.post
 @app.post('/tags')
 def add_data(tag: Tag):
-    tag_col.insert_one(tag.dict())
-    return tag_col
+    doc = tag.dict()
+    tag_col.insert_one(doc)
+    return {"message": "Tag toegevoegd! Sluit dit venster en refresh de pagina om de aanpassingen te zien", "tag": doc}
 @app.post('/bat')
 def add_data(batUID: str = Form(...), current_user: str = Depends(get_current_user), comment: str = Form(...)):
     bat_col.insert_one({"createdAt": str((datetime.utcnow() + timedelta(hours=1)).isoformat()), "retiredAt": "/", "batUID": batUID, "user" : current_user, "comment": comment})
@@ -250,9 +251,10 @@ def add_data(type: str = Form(...), name: str = Form(...), current_user: str = D
     loc_col.insert_one({"type": type, "name": name, "user": current_user, "comment": comment})
     return {"message": "Locatie toegevoeg! Sluit dit venster en refresh de pagina om de aanpassingen te zien"}
 @app.post('/assign')
-def add_data(assign: Assign):
-    assign_col.insert_one(assign.dict())
-    return assign_col
+def add_data(tagId: int = Form(...), type: str = Form(...), assignedId: str = Form(...)):
+    assign_col.insert_one({"tagId": tagId, "validFrom": str((datetime.utcnow() + timedelta(hours=1)).isoformat()), "validTo": "/", "type": type, "assignedId": assignedId})
+    return {"message": "Assignment toegevoegd!Sluit dit venster en refresh de pagina om de aanpassingen te zien"}
+
 @app.post('/stat')
 def add_data(batUID: str = Form(...),rawData: str = Form(...),estimation : int = Form(...), current_user: str = Depends(get_current_user), comment: str = Form(...)):
     stat_col.insert_one({"batUID": batUID, "timestamp": str((datetime.utcnow() + timedelta(hours=1)).isoformat()), "rawData": rawData, "estimation" : estimation, "user": current_user, "comment": comment})

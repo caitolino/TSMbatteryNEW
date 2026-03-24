@@ -49,7 +49,7 @@ a{text-decoration: none;}
 #leerkracht:hover{background-color:#bcd9eb !important; border:2px solid #bcd9eb; color:#6594B1;}
 #leerling:hover{background-color:#f3d1ec !important; border:2px solid #f3d1ec; color:#DDAED3;}
 .plus:hover{background-color:#f3d1ec !important; border:2px solid #f3d1ec; color:#DDAED3;}
-
+.tagassign:hover{background-color:#bcd9eb !important; border:2px solid #bcd9eb; color:#6594B1;}
 header{
     display:flex;
     flex-direction:column;
@@ -165,6 +165,10 @@ footer{
 .plus{width :30px; height: 30px; color:#EEEEEE; 
     background-color:#DDAED3;
     box-shadow: 2px 2px 2px #b68ead;border-radius: 50%;display: inline-flex;
+    align-items: center; justify-content: center;}
+.tagassign{width :30px; height: 30px; color:#bcd9eb; 
+    background-color:#6594B1;
+    box-shadow: 2px 2px 2px #6594B1;border-radius: 50%;display: inline-flex;
     align-items: center; justify-content: center;}
 .titleplus{display:flex; flex-direction: row; column-gap : 10px}
 .form{

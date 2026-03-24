@@ -36,18 +36,18 @@
             fetch('http://127.0.0.1:8000/loc')
                 .then(r => r.json())
                 .then(data => {
-                    console.log('Data loaded:', data); // Debug: check if data is received
+                    console.log('Data loaded:', data); 
                     window.allItems = data;
 
                     const renderItems = (filter) => {
-                        let filteredData = data; // Default to all
+                        let filteredData = data;
                         if (filter === 'locatie') {
                             filteredData = data.filter(item => item.type === 'locatie');
                         } else if (filter === 'kart') {
                             filteredData = data.filter(item => item.type === 'kart');
                         }
 
-                        console.log('Filtered data for', filter, ':', filteredData); // Debug: check filtering
+                        console.log('Filtered data for', filter, ':', filteredData); 
                         const html = filteredData.map(item => `
                             <div class="data-item">
                             <strong>Location UID:</strong> ${item.locatieUID}<br>
