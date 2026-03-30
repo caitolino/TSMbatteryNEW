@@ -30,42 +30,28 @@
 
 
 <body>
-    <header>
-        <h2>Tags</h2>
-        <nav>
-        <a href="../home.html"><img class="navbar" id="logo" src="../img/Logo.png" alt="tsm logo" style="height:50px; width:auto;"></a>
-          <ul>
-                <li><a class="navbar" href="batteries.html">batterijen</a></li>
-                <li><a class="navbar" href="wedstrijden.html">wedstrijden</a></li>
-                <li><a class="navbar" href="locaties.html">locaties</a></li>
-                <li><a class="navbar" href="tags.html">tags</a></li>
-                <li><a class="navbar" href="meetdata.html">meetdata</a></li>
-          </ul>
-        </nav>
-    </header>
-</body>
-
-
-
-
-
-<body>
     <div class="containergroot">
-        <div class = "h3"><h3>Alle aangemaakte tags</h3></div> <div class="containergroot">
-        <a style="color:#DDAED3"><label for="cars">Filter:</label>
-        <select name="type" id="lk">
-        <option value="geen">geen</option>
-        <option value="locatie">locatie</option>
-        <option value="kart">kart</option>
-        <option value="batterij">batterij</option>
-        </select>
-        </a>
-    </div>
-        
+        <div class="titleplus">
+            <div class = "h3"><h3>Alle aangemaakte tags</h3></div>
+        </div>
         <div id="tags-list">Loading…</div>
         <div id="tags-container"></div>
-        
+      <script>
+      fetch('http://127.0.0.1:8000/tags')
+        .then(r => r.json())
+        .then(data => {
+          const html = data.map(tag => {
+            const assignmentsHtml = tag.assignments.length
+              ? tag.assignments.map(a => `
+                  <div class="assignment-item">
+                    <strong>Assigned ID:</strong> ${a.assignedId}<br>
+                    <strong>Valid From:</strong> ${a.validFrom}<br>
+                    <strong>Valid To:</strong> ${a.validTo}
+                  </div>
+                `).join('')
+              : 'None';
 
+<<<<<<< HEAD
 <script>
 const token = localStorage.getItem('token');
 if (!token) {
@@ -84,54 +70,25 @@ fetch('http://127.0.0.1:8000/tags', {
     if (!Array.isArray(data)) throw new Error('Expected array data from /tags');
     console.log('Data loaded:', data); // Debug: check if data is received
     window.allItems = data;
+=======
+            return `
+              <div class="data-item">
+                <strong>Tag ID:</strong> ${tag.tagId}<br>
+                <strong>Type:</strong> ${tag.type}<br>
+                <strong>Status:</strong> ${tag.active ? 'Active' : 'Inactive'}<br>
+                <p>
+                  <strong>Assignments:</strong>
+                  <a href="../popUp/AssignAdd.html" target="_blank" rel="noreferrer"><span class="tagassign">✚</span></a>
+                  ${assignmentsHtml}
+                </p>
+              </div>
+            `;
+          }).join('');
+>>>>>>> parent of 6fae374 (foutje van codes wedstrijd)
 
-    const renderItems = (filter) => {
-      let filteredData = data; // Default to all
-      if (filter === 'locatie') {
-        filteredData = data.filter(tag => tag.assignmentType === 'locatie' || tag.assignmentType === 'locaties/autos');
-      } else if (filter === 'kart') {
-        filteredData = data.filter(tag => tag.assignmentType === 'kart');
-      } else if (filter === 'batterij') {
-        filteredData = data.filter(tag => tag.assignmentType === 'batterij' || tag.assignmentType === 'batterijen');
-      }
-
-      console.log('Filtered data for', filter, ':', filteredData);
-      const html = filteredData.map(tag => {
-        const assignmentsHtml = tag.assignments.length
-          ? tag.assignments.map(a => `
-              <div class="assignment-item">
-                <strong>Assigned ID:</strong> ${a.assignedId}<br>
-                <strong>Valid From:</strong> ${a.validFrom}<br>
-                <strong>Valid To:</strong> ${a.validTo}
-                </div>
-            `).join('')
-          : 'None';
-
-        return `
-          <div class="data-item">
-            <strong>Tag ID:</strong> ${tag.tagId}<br>
-            <strong>Type:</strong> ${tag.assignmentType}<br>
-            <strong>Status:</strong> ${tag.active ? 'Active' : 'Inactive'}<br>
-            <strong>Assignments:</strong>
-            <a href="../popUp/AssignAdd.html" target="_blank" rel="noreferrer"><span class="tagassign">✚</span></a><br>
-            ${assignmentsHtml}
-          </div>
-        `;
-      }).join('');
-      document.getElementById('tags-container').innerHTML = html || '<p>No tags found</p>';
-    };
-
-    renderItems('geen');
-    document.getElementById('lk').addEventListener('change', (event) => {
-      console.log('Select changed to:', event.target.value); 
-      renderItems(event.target.value);
-    });
-  })
-  .catch(err => { 
-    console.error('Error:', err); 
-    document.getElementById('tags-container').innerHTML = `<p style="color:red;">Error: ${err}</p>`; 
-  });
-</script>
+          document.getElementById('tags-container').innerHTML = html;
+        });
+      </script>
     </div>
 </body>
 

@@ -78,7 +78,7 @@
                     });
                 })
                 .catch(err => { 
-                    console.error('Error:', err);
+                    console.error('Error:', err); // Debug: check for fetch errors
                     document.getElementById('loc').innerHTML = `<p style="color:red;">Error: ${err}</p>`; 
                 });
         </script>
