@@ -9,16 +9,48 @@
 <style>body{background-color: #EEEEEE;background-image: url(../img/bb.jpeg.png);}</style>
 <body>
   <div class="form">
-    <form action="http://127.0.0.1:8000/assign" method="POST">
+    <form id="assignForm">
       <H2>STATISCHE DATA</H2>
       <label for="tagId">Tag ID:</label><br>
-      <input type="text" name="tagId" placeholder="id" required/><br>
+      <input type="text" id="tagId" name="tagId" placeholder="id" required/><br>
       <label for="type">Type:</label><br>
-      <input type="text" name="type" placeholder="type" required/><br>
+      <input type="text" id="type" name="type" placeholder="type" required/><br>
       <label for="assignedId">ID:</label><br>
-      <input type="text" name="assignedId" placeholder="ID" required/><br>
+      <input type="text" id="assignedId" name="assignedId" placeholder="ID" required/><br>
       <button type="submit">Submit</button>
     </form>
   </div>
+  <script>
+    document.getElementById('assignForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const token = localStorage.getItem('token');
+      if (!token) {
+        alert('Not authenticated. Please log in.');
+        return;
+      }
+      const formData = new FormData();
+      formData.append('tagId', document.getElementById('tagId').value);
+      formData.append('type', document.getElementById('type').value);
+      formData.append('assignedId', document.getElementById('assignedId').value);
+      try {
+        const response = await fetch('http://127.0.0.1:8000/assign', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`
+          },
+          body: formData
+        });
+        const data = await response.json();
+        if (response.ok) {
+          alert(data.message);
+          window.close();
+        } else {
+          alert('Error: ' + (data.detail || 'Unknown error'));
+        }
+      } catch (error) {
+        alert('Error: ' + error.message);
+      }
+    });
+  </script>
 </body>
 </html>

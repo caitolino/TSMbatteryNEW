@@ -31,9 +31,17 @@
         
         <div id="loc">Loading…</div>
         <script>
-            fetch('http://127.0.0.1:8000/loc')
-                .then(r => r.json())
-                .then(data => {
+            const token = localStorage.getItem('token');
+            fetch('http://127.0.0.1:8000/loc', {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            })
+                .then(r => r.json().then(data => ({ok: r.ok, data})))
+                .then(({ok, data}) => {
+                    if (!ok) throw new Error(data.detail || JSON.stringify(data));
+                    if (!Array.isArray(data)) throw new Error('Expected array data from /loc');
                     console.log('Data loaded:', data);
                     window.allItems = data;
 

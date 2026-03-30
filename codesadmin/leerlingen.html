@@ -38,11 +38,19 @@
             <script>
                 async function loadUsers() {
                     try {
-                    const headers = {};
-                    const creds = localStorage.getItem('credentials');
-                    if (creds) headers.Authorization = 'Basic ' + creds;
+                    const token = localStorage.getItem('token');
+                    if (!token) {
+                        document.getElementById('user-list').innerHTML = `<p style="color:red;">Not authenticated. <a href="../popUp/login.html">Log in</a></p>`;
+                        throw new Error('No token present');
+                    }
+                    const headers = {
+                      'Authorization': `Bearer ${token}`,
+                      'Content-Type': 'application/json'
+                    };
                     const res = await fetch('http://127.0.0.1:8000/user', { headers });
                     const data = await res.json();
+                    if (!res.ok) throw new Error(data.detail || JSON.stringify(data));
+                    if (!Array.isArray(data)) throw new Error('Expected array data from /user');
                     const html = data.map(b => {
                         const writeChecked = b.write ? 'checked' : '';
                         const adminChecked = b.admin ? 'checked' : '';
@@ -93,6 +101,35 @@
                             e.target.checked = !value;
                         }
                     }
+                });
+
+                document.querySelectorAll('.toggle-field').forEach(input => {
+                    input.addEventListener('click', async (event) => {
+                        event.preventDefault();
+                        const username = event.target.dataset.user;
+                        const field = event.target.dataset.field;
+                        const value = event.target.checked;
+                        try {
+                            const token = localStorage.getItem('token');
+                            const headers = {
+                                'Content-Type': 'application/x-www-form-urlencoded',
+                                'Authorization': `Bearer ${token}`
+                            };
+                            const endpoint = field === 'write' ? '/admin/set-write' : '/admin/set-admin';
+                            const resp = await fetch(`http://127.0.0.1:8000${endpoint}`, {
+                                method: 'POST',
+                                headers,
+                                body: new URLSearchParams({ target_username: username, [field]: value })
+                            });
+                            if (!resp.ok) {
+                                const txt = await resp.text();
+                                throw new Error(txt);
+                            }
+                        } catch (err) {
+                            alert(`Failed to update ${field}: ` + err.message);
+                            event.target.checked = !value;
+                        }
+                    });
                 });
             </script>
         </div>

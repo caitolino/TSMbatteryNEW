@@ -32,8 +32,20 @@
             <script>
                 async function loadStat() {
                     try {
-                    const res = await fetch('http://127.0.0.1:8000/stat');
+                    const token = localStorage.getItem('token');
+                    const res = await fetch('http://127.0.0.1:8000/stat', {
+                      headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                      }
+                    });
                     const data = await res.json();
+                    if (!res.ok) {
+                      throw new Error(data.detail || JSON.stringify(data));
+                    }
+                    if (!Array.isArray(data)) {
+                      throw new Error('Expected array data from /stat');
+                    }
                     const html = data.map(stat => `
                         <div class="data-item">
                         <strong>Bat UID:</strong> ${stat.batUID}<br>

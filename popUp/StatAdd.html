@@ -9,18 +9,51 @@
 <style>body{background-color: #EEEEEE;background-image: url(../img/bb.jpeg.png);}</style>
 <body>
   <div class="form">
-    <form action="http://127.0.0.1:8000/stat" method="POST">
+    <form id="statForm">
       <H2>STATISCHE DATA</H2>
       <label for="batUID">batterij id:</label><br>
-      <input type="text" name="batUID" placeholder="id" required/><br>
+      <input type="text" id="batUID" name="batUID" placeholder="id" required/><br>
       <label for="rawData">meet data:</label><br>
-      <input type="text" name="rawData" placeholder="{volt: u, current: i}" required/><br>
+      <input type="text" id="rawData" name="rawData" placeholder="{volt: u, current: i}" required/><br>
       <label for="estimation">schatting:</label><br>
-      <input type="text" name="estimation" placeholder="0" required/><br>
+      <input type="text" id="estimation" name="estimation" placeholder="0" required/><br>
       <label for="comment">commentaar:</label><br>
-      <input type="text" name="comment" placeholder="/" required/><br>
+      <input type="text" id="comment" name="comment" placeholder="/" required/><br>
       <button type="submit">Submit</button>
     </form>
   </div>
+  <script>
+    document.getElementById('statForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const token = localStorage.getItem('token');
+      if (!token) {
+        alert('Not authenticated. Please log in.');
+        return;
+      }
+      const formData = new FormData();
+      formData.append('batUID', document.getElementById('batUID').value);
+      formData.append('rawData', document.getElementById('rawData').value);
+      formData.append('estimation', document.getElementById('estimation').value);
+      formData.append('comment', document.getElementById('comment').value);
+      try {
+        const response = await fetch('http://127.0.0.1:8000/stat', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`
+          },
+          body: formData
+        });
+        const data = await response.json();
+        if (response.ok) {
+          alert(data.message);
+          window.close();
+        } else {
+          alert('Error: ' + (data.detail || 'Unknown error'));
+        }
+      } catch (error) {
+        alert('Error: ' + error.message);
+      }
+    });
+  </script>
 </body>
 </html>

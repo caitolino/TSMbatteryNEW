@@ -9,14 +9,45 @@
 <style>body{background-color: #EEEEEE;#EEEEEE;background-image: url(../img/bb.jpeg.png);}</style>
 <body>
   <div class="form">
-    <form action="http://127.0.0.1:8000/bat" method="POST">
+    <form id="batteryForm">
       <H2>Batterij</H2>
       <label for="batUID">naam:</label><br>
-      <input type="text" name="batUID" placeholder="batUID" required /><br>
+      <input type="text" id="batUID" name="batUID" placeholder="batUID" required /><br>
       <label for="comment">commentaar:</label><br>
-      <input type="text" name="comment" placeholder="/" required /><br>
+      <input type="text" id="comment" name="comment" placeholder="/" required /><br>
       <p><button type="submit">submit!</button></p>
     </form>
   </div>
+  <script>
+    document.getElementById('batteryForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const token = localStorage.getItem('token');
+      if (!token) {
+        alert('Not authenticated. Please log in.');
+        return;
+      }
+      const formData = new FormData();
+      formData.append('batUID', document.getElementById('batUID').value);
+      formData.append('comment', document.getElementById('comment').value);
+      try {
+        const response = await fetch('http://127.0.0.1:8000/bat', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`
+          },
+          body: formData
+        });
+        const data = await response.json();
+        if (response.ok) {
+          alert(data.message);
+          window.close();
+        } else {
+          alert('Error: ' + (data.detail || 'Unknown error'));
+        }
+      } catch (error) {
+        alert('Error: ' + error.message);
+      }
+    });
+  </script>
 </body>
 </html>

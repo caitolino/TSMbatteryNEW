@@ -9,16 +9,48 @@
 <style>body{background-color: #EEEEEE;#EEEEEE;background-image: url(../img/bb.jpeg.png);}</style>
 <body>
   <div class="form">
-    <form action="http://127.0.0.1:8000/loc" method="POST">
+    <form id="locationForm">
       <H2>LOCATIE</H2>
       <label for="type">kart of locatie?:</label><br>
-      <input type="text" name="type" placeholder="kart/locatie" required/><br>
+      <input type="text" id="type" name="type" placeholder="kart/locatie" required/><br>
       <label for="name">naam:</label><br>
-      <input type="text" name="name" placeholder="naam" required/><br>
+      <input type="text" id="name" name="name" placeholder="naam" required/><br>
       <label for="comment">commentaar:</label><br>
-      <input type="text" name="comment" placeholder="/" required/><br>
+      <input type="text" id="comment" name="comment" placeholder="/" required/><br>
       <button type="submit">Submit</button>
     </form>
   </div>
+  <script>
+    document.getElementById('locationForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const token = localStorage.getItem('token');
+      if (!token) {
+        alert('Not authenticated. Please log in.');
+        return;
+      }
+      const formData = new FormData();
+      formData.append('type', document.getElementById('type').value);
+      formData.append('name', document.getElementById('name').value);
+      formData.append('comment', document.getElementById('comment').value);
+      try {
+        const response = await fetch('http://127.0.0.1:8000/loc', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`
+          },
+          body: formData
+        });
+        const data = await response.json();
+        if (response.ok) {
+          alert(data.message);
+          window.close();
+        } else {
+          alert('Error: ' + (data.detail || 'Unknown error'));
+        }
+      } catch (error) {
+        alert('Error: ' + error.message);
+      }
+    });
+  </script>
 </body>
 </html>

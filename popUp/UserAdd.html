@@ -10,14 +10,45 @@
 <style>body{background-color: #EEEEEE;background-image: url(../img/background.jpg);}</style>
 <body>
   <div class="form">
-    <form action="http://127.0.0.1:8000/user" method="POST">
+    <form id="userForm">
       <H2>LEERLINGEN</H2>
       <label for="username">gebruikersnaam:</label><br>
-      <input type="text" name="username" placeholder="naam" required/><br>
+      <input type="text" id="username" name="username" placeholder="naam" required/><br>
       <label for="password">paswoord:</label><br>
-      <input type="text" name="password" placeholder="paswoord" required/><br>
+      <input type="text" id="password" name="password" placeholder="paswoord" required/><br>
       <button type="submit">Submit</button>
     </form>
   </div>
+  <script>
+    document.getElementById('userForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const token = localStorage.getItem('token');
+      if (!token) {
+        alert('Not authenticated. Please log in.');
+        return;
+      }
+      const formData = new FormData();
+      formData.append('username', document.getElementById('username').value);
+      formData.append('password', document.getElementById('password').value);
+      try {
+        const response = await fetch('http://127.0.0.1:8000/user', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`
+          },
+          body: formData
+        });
+        const data = await response.json();
+        if (response.ok) {
+          alert(data.message);
+          window.close();
+        } else {
+          alert('Error: ' + (data.detail || 'Unknown error'));
+        }
+      } catch (error) {
+        alert('Error: ' + error.message);
+      }
+    });
+  </script>
 </body>
 </html>

@@ -67,26 +67,39 @@
         <div id="tags-container"></div>
 
 <script>
-fetch('http://127.0.0.1:8000/tags')
-  .then(r => r.json())
-  .then(data => {
+const token = localStorage.getItem('token');
+if (!token) {
+  document.getElementById('tags-container').innerHTML = `<p style="color:red;">Not authenticated. <a href="../popUp/login.html">Log in</a></p>`;
+  throw new Error('No token present');
+}
+fetch('http://127.0.0.1:8000/tags', {
+  headers: {
+    'Authorization': `Bearer ${token}`,
+    'Content-Type': 'application/json'
+  }
+})
+  .then(r => r.json().then(data => ({ok: r.ok, data})))
+  .then(({ok, data}) => {
+    if (!ok) throw new Error(data.detail || JSON.stringify(data));
+    if (!Array.isArray(data)) throw new Error('Expected array data from /tags');
     console.log('Data loaded:', data); // Debug: check if data is received
     window.allItems = data;
 
     const renderItems = (filter) => {
-      let filteredData = data; // Default to all
+      let filteredData = Array.isArray(data) ? data : []; // Default to empty array if not array
       if (filter === 'locatie') {
-        filteredData = data.filter(tag => tag.assignmentType === 'locatie' || tag.assignmentType === 'locaties/autos');
+        filteredData = filteredData.filter(tag => tag.assignmentType === 'locatie' || tag.assignmentType === 'locaties/autos');
       } else if (filter === 'kart') {
-        filteredData = data.filter(tag => tag.assignmentType === 'kart');
+        filteredData = filteredData.filter(tag => tag.assignmentType === 'kart');
       } else if (filter === 'batterij') {
-        filteredData = data.filter(tag => tag.assignmentType === 'batterij' || tag.assignmentType === 'batterijen');
+        filteredData = filteredData.filter(tag => tag.assignmentType === 'batterij' || tag.assignmentType === 'batterijen');
       }
 
       console.log('Filtered data for', filter, ':', filteredData);
-      const html = filteredData.map(tag => {
-        const assignmentsHtml = tag.assignments.length
-          ? tag.assignments.map(a => `
+      const html = (Array.isArray(filteredData) ? filteredData : []).map(tag => {
+        const assignments = Array.isArray(tag.assignments) ? tag.assignments : [];
+        const assignmentsHtml = assignments.length
+          ? assignments.map(a => `
               <div class="assignment-item">
                 <strong>Assigned ID:</strong> ${a.assignedId}<br>
                 <strong>Valid From:</strong> ${a.validFrom}<br>

@@ -39,13 +39,14 @@
                     });
                     const data = await resp.json();
                     if (resp.ok) {
-                        if(data.admin) {
-                            alert("Log je in als leerkracht");
+                        const token = data.access_token;
+                        if (!token) {
+                            alert("Login failed: no access token returned");
                             return;
                         }
-                        const token = btoa(`${f.username.value}:${f.password.value}`);
-                        localStorage.setItem('credentials', token);
+                        localStorage.setItem('token', token);
                         localStorage.setItem("loggedInUser", f.username.value);
+
                         if (data.admin) {
                             location.href = "../codesadmin/leerlingen.html";
                         } else if (data.write) {
