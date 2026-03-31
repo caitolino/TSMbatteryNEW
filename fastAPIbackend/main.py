@@ -88,7 +88,7 @@ def check_admin_permission(current_user_data: dict):
         raise HTTPException(status_code=403, detail="Niet geautoriseerd")
     return current_user_data
 
-# ==================== AUTH HELPER FUNCTIONS ====================
+
 
 def hash_password(password: str) -> str:
     return hashlib.sha256(password.encode("utf-8")).hexdigest()
@@ -105,7 +105,7 @@ def verify_admin(username: str) -> bool:
         return False
     return bool(user.get("admin", False))
 
-# ==================== STARTUP EVENT ====================
+
 
 @app.on_event("startup")
 def startup_event():
@@ -117,7 +117,6 @@ def startup_event():
         app.state.mongo_ok = False
         logger.exception("Gefaald om te connecteren met MongoDB: %s", e)
 
-# ==================== HEALTH CHECK ====================
 
 @app.get("/health")
 def health():
@@ -138,7 +137,7 @@ def test_db():
         logger.exception("MongoDB test gefaald")
         raise HTTPException(status_code=503, detail=f"MongoDB error: {e}")
 
-# ==================== GET ENDPOINTS (READ) ====================
+
 
 @app.get("/data")
 def get_data(current_user_data = Depends(get_current_user_from_token)):
@@ -223,7 +222,7 @@ def get_wedstrijden(current_user_data = Depends(get_current_user_from_token)):
     data = list(wed_col.find({}, {"_id": 0}))
     return data
 
-# ==================== PYDANTIC MODELS ====================
+
 
 class Stat(BaseModel):
     batUID : str
@@ -264,7 +263,6 @@ class User(BaseModel):
     write: bool = False
     admin: bool = False
 
-# ==================== POST ENDPOINTS (WRITE) ====================
 
 @app.post('/tags')
 def add_tag(tag: Tag, current_user_data = Depends(get_current_user_from_token)):
@@ -313,7 +311,7 @@ def add_user(username: str = Form(...), password: str = Form(...), current_user_
     })
     return {"message": "Gebruiker toegevoegd! Sluit dit venster en refresh de pagina om de aanpassingen te zien"}
 
-# ==================== AUTH ENDPOINTS ====================
+
 
 @app.post("/login")
 def login(username: str = Form(...), password: str = Form(...)):
@@ -345,7 +343,7 @@ def register(username: str = Form(...), password: str = Form(...)):
     })
     return {"message": "User registered successfully"}
 
-# ==================== ADMIN ENDPOINTS ====================
+
 
 @app.post('/admin/set-write')
 def admin_set_write(target_username: str = Form(...), write: bool = Form(...), current_user_data = Depends(get_current_user_from_token)):
@@ -365,7 +363,6 @@ def admin_set_admin(target_username: str = Form(...), admin: bool = Form(...), c
         raise HTTPException(status_code=404, detail="Gebruiker niet gevonden")
     return {"message": f"User {target_username} admin set to {admin}"}
 
-# ==================== STATIC FILES ====================
 
 app.mount("/", StaticFiles(directory="..", html=True), name="static")
 

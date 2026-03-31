@@ -36,101 +36,41 @@
             </div>
             <div id="user-list">Loading…</div>
             <script>
-                async function loadUsers() {
+                async function loadusers() {
                     try {
                     const token = localStorage.getItem('token');
                     if (!token) {
                         document.getElementById('user-list').innerHTML = `<p style="color:red;">Not authenticated. <a href="../popUp/login.html">Log in</a></p>`;
                         throw new Error('No token present');
                     }
-                    const headers = {
-                      'Authorization': `Bearer ${token}`,
-                      'Content-Type': 'application/json'
-                    };
-                    const res = await fetch('http://127.0.0.1:8000/user', { headers });
-                    const data = await res.json();
-                    if (!res.ok) throw new Error(data.detail || JSON.stringify(data));
-                    if (!Array.isArray(data)) throw new Error('Expected array data from /user');
-                    const html = data.map(b => {
-                        const writeChecked = b.write ? 'checked' : '';
-                        const adminChecked = b.admin ? 'checked' : '';
-                        return `
-                        <div class="data-item">
-                          <strong>Gebruikersnaam:</strong> ${b.username}<br>
-                          <label>
-                            schrijf rechten:
-                            <input type="checkbox" data-user="${b.username}" data-field="write" ${writeChecked} class="toggle-field">
-                          </label><br>
-                          <label>
-                            leerkracht:
-                            <input type="checkbox" data-user="${b.username}" data-field="admin" ${adminChecked} class="toggle-field">
-                          </label>
-                        </div>
-                    `;
-                    }).join('');
-                    document.getElementById('user-list').innerHTML = html || '<p>No batteries found</p>';
-                    } catch (e) {
-                    document.getElementById('userlist').innerHTML = `<p style="color:red;">Error: ${e.message}</p>`;
-                    }
-                }
-                loadUsers();
-
-                // delegate change events for checkboxes
-                document.addEventListener('change', async e => {
-                    if (e.target.classList.contains('toggle-field')) {
-                        const username = e.target.getAttribute('data-user');
-                        const field = e.target.getAttribute('data-field');
-                        const value = e.target.checked;
-                        try {
-                            const endpoint = field === 'write' ? '/admin/set-write' : '/admin/set-admin';
-                            const headers = { 'Content-Type': 'application/x-www-form-urlencoded' };
-                            const creds = localStorage.getItem('credentials');
-                            if (creds) headers.Authorization = 'Basic ' + creds;
-                            const resp = await fetch(`http://127.0.0.1:8000${endpoint}`, {
-                                method: 'POST',
-                                headers,
-                                body: new URLSearchParams({ target_username: username, [field]: value })
-                            });
-                            if (!resp.ok) {
-                                const txt = await resp.text();
-                                throw new Error(txt);
-                            }
-                        } catch (err) {
-                            alert(`Failed to update ${field}: ` + err.message);
-                            // revert checkbox
-                            e.target.checked = !value;
-                        }
-                    }
-                });
-
-                document.querySelectorAll('.toggle-field').forEach(input => {
-                    input.addEventListener('click', async (event) => {
-                        event.preventDefault();
-                        const username = event.target.dataset.user;
-                        const field = event.target.dataset.field;
-                        const value = event.target.checked;
-                        try {
-                            const token = localStorage.getItem('token');
-                            const headers = {
-                                'Content-Type': 'application/x-www-form-urlencoded',
-                                'Authorization': `Bearer ${token}`
-                            };
-                            const endpoint = field === 'write' ? '/admin/set-write' : '/admin/set-admin';
-                            const resp = await fetch(`http://127.0.0.1:8000${endpoint}`, {
-                                method: 'POST',
-                                headers,
-                                body: new URLSearchParams({ target_username: username, [field]: value })
-                            });
-                            if (!resp.ok) {
-                                const txt = await resp.text();
-                                throw new Error(txt);
-                            }
-                        } catch (err) {
-                            alert(`Failed to update ${field}: ` + err.message);
-                            event.target.checked = !value;
-                        }
+                    const res = await fetch('http://127.0.0.1:8000/user', {
+                      headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                      }
                     });
-                });
+                    const data = await res.json();
+                    if (!res.ok) {
+                      throw new Error(data.detail || JSON.stringify(data));
+                    }
+                    if (!Array.isArray(data)) {
+                      throw new Error('Expected array data from /user');
+                    }
+                    const html = data.map(u => `
+                        <div class="data-item">
+                        <strong>Battery UID:</strong> ${u.batUID}<br>
+                        <strong>Created:</strong> ${u.createdAt}<br>
+                        <strong>Retired:</strong> ${u.retiredAt}<br>
+                        <strong>User:</strong> ${u.user}<br>
+                        <strong>Comment:</strong> ${u.comment || '/'}
+                        </div>
+                    `).join('');
+                    document.getElementById('user-list').innerHTML = html || '<p>No users found</p>';
+                    } catch (e) {
+                    document.getElementById('user-list').innerHTML = `<p style="color:red;">Error: ${e.message}</p>`;
+                    }
+            
+                loadusers();
             </script>
         </div>
     </container>
