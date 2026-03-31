@@ -262,6 +262,11 @@ def add_data(batUID: str = Form(...),rawData: str = Form(...),estimation : int =
 
 @app.post('/user')
 def add_data(username: str = Form(...), password: str = Form(...)):
+    if len(username) > 20:
+        raise HTTPException(
+            status_code=400,
+            detail="Gebruikersnaam mag niet langer zijn dan 20 tekens!",
+        )
     if user_col.find_one({"username": username}):
         raise HTTPException(
             status_code=400,
