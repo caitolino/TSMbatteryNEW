@@ -12,6 +12,7 @@ from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from dotenv import load_dotenv
 from datetime import datetime, timedelta
+from paho.mqtt import client as mqtt
 
 
 templates = Jinja2Templates(directory="templates")
@@ -43,6 +44,12 @@ if not MONGO_URI:
     raise RuntimeError("MONGO_URI environment variable must be set")
 
 client = MongoClient(MONGO_URI, serverSelectionTimeoutMS=5000)
+mqtt_client = mqtt.Client()
+
+BROKER = "test.mosquitto.org"
+PORT = 8883
+topic_for_RPI = "RPITSM2/receiver"
+
 
 db = client["collected_data"]
 bat_col = db["BATTERIJEN"]
@@ -297,6 +304,7 @@ def admin_set_write(target_username: str = Form(...), write: bool = Form(...), c
     result = user_col.update_one({"username": target_username}, {"$set": {"write": write}})
     if result.matched_count == 0:
         raise HTTPException(status_code=404, detail="User not found")
+    mqtt_client.publish("topic_for_RPI", )
     return {"message": f"User {target_username} write set to {write}"}
 
 @app.post('/admin/set-admin')
