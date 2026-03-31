@@ -51,26 +51,6 @@
                 `).join('')
               : 'None';
 
-<<<<<<< HEAD
-<script>
-const token = localStorage.getItem('token');
-if (!token) {
-  document.getElementById('tags-container').innerHTML = `<p style="color:red;">Not authenticated. <a href="../popUp/login.html">Log in</a></p>`;
-  throw new Error('No token present');
-}
-fetch('http://127.0.0.1:8000/tags', {
-  headers: {
-    'Authorization': `Bearer ${token}`,
-    'Content-Type': 'application/json'
-  }
-})
-  .then(r => r.json().then(data => ({ok: r.ok, data})))
-  .then(({ok, data}) => {
-    if (!ok) throw new Error(data.detail || JSON.stringify(data));
-    if (!Array.isArray(data)) throw new Error('Expected array data from /tags');
-    console.log('Data loaded:', data); // Debug: check if data is received
-    window.allItems = data;
-=======
             return `
               <div class="data-item">
                 <strong>Tag ID:</strong> ${tag.tagId}<br>
@@ -84,7 +64,6 @@ fetch('http://127.0.0.1:8000/tags', {
               </div>
             `;
           }).join('');
->>>>>>> parent of 6fae374 (foutje van codes wedstrijd)
 
           document.getElementById('tags-container').innerHTML = html;
         });

@@ -37,25 +37,6 @@
         <div id="tags-container"></div>
 
 <script>
-<<<<<<< HEAD
-const token = localStorage.getItem('token');
-if (!token) {
-  document.getElementById('tags-container').innerHTML = `<p style="color:red;">Not authenticated. <a href="../popUp/login.html">Log in</a></p>`;
-  throw new Error('No token present');
-}
-fetch('http://127.0.0.1:8000/tags', {
-  headers: {
-    'Authorization': `Bearer ${token}`,
-    'Content-Type': 'application/json'
-  }
-})
-  .then(r => r.json().then(data => ({ok: r.ok, data})))
-  .then(({ok, data}) => {
-    if (!ok) throw new Error(data.detail || JSON.stringify(data));
-    if (!Array.isArray(data)) throw new Error('Expected array data from /tags');
-    console.log('Data loaded:', data); 
-    window.allItems = data;
-=======
 fetch('http://127.0.0.1:8000/tags')
   .then(r => r.json())
   .then(data => {
@@ -69,7 +50,6 @@ fetch('http://127.0.0.1:8000/tags')
               </div>
           `).join('')
         : 'None';
->>>>>>> parent of 6fae374 (foutje van codes wedstrijd)
 
       return `
         <div class="data-item">
@@ -79,25 +59,10 @@ fetch('http://127.0.0.1:8000/tags')
           <strong>Assignments:</strong>
           <a href="../popUp/AssignAdd.html" target="_blank" rel="noreferrer"><span class="tagassign">✚</span></a>
 
-<<<<<<< HEAD
-      console.log('Filtered data for', filter, ':', filteredData);
-      const html = (Array.isArray(filteredData) ? filteredData : []).map(tag => {
-        const assignments = Array.isArray(tag.assignments) ? tag.assignments : [];
-        const assignmentsHtml = assignments.length
-          ? assignments.map(a => `
-              <div class="assignment-item">
-                <strong>Assigned ID:</strong> ${a.assignedId}<br>
-                <strong>Valid From:</strong> ${a.validFrom}<br>
-                <strong>Valid To:</strong> ${a.validTo}
-                </div>
-            `).join('')
-          : 'None';
-=======
           ${assignmentsHtml}
         </div>
       `;
     }).join('');
->>>>>>> parent of 6fae374 (foutje van codes wedstrijd)
 
     document.getElementById('tags-container').innerHTML = html;
   });

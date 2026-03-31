@@ -30,60 +30,63 @@
 
 
 <body>
+    <header>
+        <h2>Tags</h2>
+        <nav>
+        <a href="../home.html"><img class="navbar" id="logo" src="../img/Logo.png" alt="tsm logo" style="height:50px; width:auto;"></a>
+          <ul>
+                <li><a class="navbar" href="batadmin.html">batterijen</a></li>
+                <li><a class="navbar" href="racadmin.html">wedstrijden</a></li>
+                <li><a class="navbar" href="locadmin.html">locaties</a></li>
+                <li><a class="navbar" href="tadmin.html">tags</a></li>
+                <li><a class="navbar" href="leerlingen.html">leerlingen</a></li>
+                <li><a class="navbar" href="meetdadmin.html">meetdata</a></li>
+          </ul>
+        </nav>
+    </header>
+</body>
+
+
+
+
+
+<body>
     <div class="containergroot">
         <div class = "h3"><h3>Alle aangemaakte tags</h3></div>
+        <div class="containergroot">
+        <a style="color:#DDAED3"><label for="cars">Filter:</label>
+        <select name="type" id="lk">
+        <option value="geen">geen</option>
+        <option value="locatie">locatie</option>
+        <option value="kart">kart</option>
+        <option value="batterij">batterij</option>
+        </select>
+        </a>
+    </div>
         <div id="tags-list">Loading…</div>
         <div id="tags-container"></div>
-      <script>
-      fetch('http://127.0.0.1:8000/tags')
-        .then(r => r.json())
-        .then(data => {
-          const html = data.map(tag => {
-            const assignmentsHtml = tag.assignments.length
-              ? tag.assignments.map(a => `
-                  <div class="assignment-item">
-                    <strong>Assigned ID:</strong> ${a.assignedId}<br>
-                    <strong>Valid From:</strong> ${a.validFrom}<br>
-                    <strong>Valid To:</strong> ${a.validTo}
-                  </div>
-                `).join('')
-              : 'None';
 
-<<<<<<< HEAD
 <script>
-const token = localStorage.getItem('token');
-if (!token) {
-  document.getElementById('tags-container').innerHTML = `<p style="color:red;">Not authenticated. <a href="../popUp/login.html">Log in</a></p>`;
-  throw new Error('No token present');
-}
-fetch('http://127.0.0.1:8000/tags', {
-  headers: {
-    'Authorization': `Bearer ${token}`,
-    'Content-Type': 'application/json'
-  }
-})
-  .then(r => r.json().then(data => ({ok: r.ok, data})))
-  .then(({ok, data}) => {
-    if (!ok) throw new Error(data.detail || JSON.stringify(data));
-    if (!Array.isArray(data)) throw new Error('Expected array data from /tags');
+fetch('http://127.0.0.1:8000/tags')
+  .then(r => r.json())
+  .then(data => {
     console.log('Data loaded:', data); // Debug: check if data is received
     window.allItems = data;
 
     const renderItems = (filter) => {
-      let filteredData = Array.isArray(data) ? data : []; // Default to empty array if not array
+      let filteredData = data; // Default to all
       if (filter === 'locatie') {
-        filteredData = filteredData.filter(tag => tag.assignmentType === 'locatie' || tag.assignmentType === 'locaties/autos');
+        filteredData = data.filter(tag => tag.assignmentType === 'locatie' || tag.assignmentType === 'locaties/autos');
       } else if (filter === 'kart') {
-        filteredData = filteredData.filter(tag => tag.assignmentType === 'kart');
+        filteredData = data.filter(tag => tag.assignmentType === 'kart');
       } else if (filter === 'batterij') {
-        filteredData = filteredData.filter(tag => tag.assignmentType === 'batterij' || tag.assignmentType === 'batterijen');
+        filteredData = data.filter(tag => tag.assignmentType === 'batterij' || tag.assignmentType === 'batterijen');
       }
 
       console.log('Filtered data for', filter, ':', filteredData);
-      const html = (Array.isArray(filteredData) ? filteredData : []).map(tag => {
-        const assignments = Array.isArray(tag.assignments) ? tag.assignments : [];
-        const assignmentsHtml = assignments.length
-          ? assignments.map(a => `
+      const html = filteredData.map(tag => {
+        const assignmentsHtml = tag.assignments.length
+          ? tag.assignments.map(a => `
               <div class="assignment-item">
                 <strong>Assigned ID:</strong> ${a.assignedId}<br>
                 <strong>Valid From:</strong> ${a.validFrom}<br>
@@ -117,24 +120,6 @@ fetch('http://127.0.0.1:8000/tags', {
     document.getElementById('tags-container').innerHTML = `<p style="color:red;">Error: ${err}</p>`; 
   });
 </script>
-=======
-            return `
-              <div class="data-item">
-                <strong>Tag ID:</strong> ${tag.tagId}<br>
-                <strong>Type:</strong> ${tag.type}<br>
-                <strong>Status:</strong> ${tag.active ? 'Active' : 'Inactive'}<br>
-                <p>
-                  <strong>Assignments:</strong>
-                  ${assignmentsHtml}
-                </p>
-              </div>
-            `;
-          }).join('');
-
-          document.getElementById('tags-container').innerHTML = html;
-        });
-      </script>
->>>>>>> parent of 6fae374 (foutje van codes wedstrijd)
     </div>
 </body>
 
