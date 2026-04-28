@@ -26,6 +26,11 @@
     document.getElementById('statForm').addEventListener('submit', async function(e) {
       e.preventDefault();
       const formData = new FormData();
+      const token = localStorage.getItem('token');
+      if (!token) {
+        alert('Not authenticated. Please log in.');
+        return;
+      }
       formData.append('batUID', document.getElementById('batUID').value);
       formData.append('rawData', document.getElementById('rawData').value);
       formData.append('estimation', document.getElementById('estimation').value);
@@ -33,6 +38,9 @@
       try {
         const response = await fetch('http://127.0.0.1:8000/stat', {
           method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`
+          },
           body: formData
         });
         const data = await response.json();
