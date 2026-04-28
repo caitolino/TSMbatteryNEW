@@ -23,11 +23,6 @@
   <script>
     document.getElementById('locationForm').addEventListener('submit', async function(e) {
       e.preventDefault();
-      const token = localStorage.getItem('token');
-      if (!token) {
-        alert('Not authenticated. Please log in.');
-        return;
-      }
       const formData = new FormData();
       formData.append('type', document.getElementById('type').value);
       formData.append('name', document.getElementById('name').value);
@@ -35,9 +30,6 @@
       try {
         const response = await fetch('http://127.0.0.1:8000/loc', {
           method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${token}`
-          },
           body: formData
         });
         const data = await response.json();

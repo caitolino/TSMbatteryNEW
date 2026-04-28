@@ -32,10 +32,8 @@
             <script>
                 async function loadBatteries() {
                     try {
-                    const token = localStorage.getItem('token');
                     const res = await fetch('http://127.0.0.1:8000/bat', {
                       headers: {
-                        'Authorization': `Bearer ${token}`,
                         'Content-Type': 'application/json'
                       }
                     });

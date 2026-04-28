@@ -42,13 +42,6 @@
                     return;
                 }
 
-                const token = data.access_token;
-                if (!token) {
-                    alert("Login failed: no access token returned");
-                    return;
-                }
-
-                localStorage.setItem('token', token);
                 localStorage.setItem("loggedInUser", f.username.value);
 
                 location.href = "../codesadmin/leerlingen.html";

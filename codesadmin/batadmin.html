@@ -37,14 +37,8 @@
             <script>
                 async function loadBatteries() {
                     try {
-                    const token = localStorage.getItem('token');
-                    if (!token) {
-                        document.getElementById('battery-list').innerHTML = `<p style="color:red;">Not authenticated. <a href="../popUp/login.html">Log in</a></p>`;
-                        throw new Error('No token present');
-                    }
                     const res = await fetch('http://127.0.0.1:8000/bat', {
                       headers: {
-                        'Authorization': `Bearer ${token}`,
                         'Content-Type': 'application/json'
                       }
                     });

@@ -12,7 +12,7 @@ from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from dotenv import load_dotenv
 from datetime import datetime, timedelta
-from paho.mqtt import client as mqtt
+#from paho.mqtt import client as mqtt
 
 
 templates = Jinja2Templates(directory="templates")
@@ -44,7 +44,7 @@ if not MONGO_URI:
     raise RuntimeError("MONGO_URI environment variable must be set")
 
 client = MongoClient(MONGO_URI, serverSelectionTimeoutMS=5000)
-mqtt_client = mqtt.Client()
+#mqtt_client = mqtt.Client()
 
 BROKER = "test.mosquitto.org"
 PORT = 8883
