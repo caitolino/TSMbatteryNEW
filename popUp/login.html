@@ -38,14 +38,10 @@
                         })
                     });
                     const data = await resp.json();
-                    });
                     if (resp.ok) {
                         if (data.admin) {
                             alert("Je bent een leerkracht");
                             return;
-                        }
-                        localStorage.setItem("loggedInUser", f.username.value);
-
                         } else if (data.write) {
                             location.href = "../codes/batteries.html";
                         } else {
