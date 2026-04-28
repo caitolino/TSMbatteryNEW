@@ -23,6 +23,11 @@
   <script>
     document.getElementById('assignForm').addEventListener('submit', async function(e) {
       e.preventDefault();
+      const token = localStorage.getItem('token');
+      if (!token) {
+        alert('Not authenticated. Please log in.');
+        return;
+      }
       const formData = new FormData();
       formData.append('tagId', document.getElementById('tagId').value);
       formData.append('type', document.getElementById('type').value);
@@ -30,6 +35,9 @@
       try {
         const response = await fetch('http://127.0.0.1:8000/assign', {
           method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`
+          },
           body: formData
         });
         const data = await response.json();

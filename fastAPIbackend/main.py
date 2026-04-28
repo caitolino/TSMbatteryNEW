@@ -2,7 +2,9 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi import Form, Depends
-from fastapi.security import HTTPBasic, HTTPBasicCredentials
+from fastapi.security import OAuth2PasswordBearer
+import jwt
+from jwt import PyJWTError
 import hashlib
 from pymongo import MongoClient
 import logging
@@ -219,6 +221,10 @@ class User (BaseModel):
 
 
 # login
+SECRET_KEY = os.getenv("SECRET_KEY", "change-this-secret-key")
+ALGORITHM = "HS256"
+ACCESS_TOKEN_EXPIRE_MINUTES = 60
+
 def hash_password(password: str) -> str:
     return hashlib.sha256(password.encode("utf-8")).hexdigest()
 
@@ -235,12 +241,32 @@ def verify_admin(username: str) -> bool:
         return False
     return bool(user.get("admin", False))
 
-security = HTTPBasic()
-def get_current_user(credentials: HTTPBasicCredentials = Depends(security)):
-    if not verify_user(credentials.username, credentials.password):
-        raise HTTPException(status_code=401, detail="Invalide credentials")
-    return credentials.username
+def create_access_token(data: dict, expires_delta: timedelta | None = None):
+    to_encode = data.copy()
+    expire = datetime.utcnow() + (expires_delta or timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES))
+    to_encode.update({"exp": expire})
+    return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
 
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
+
+
+def get_current_user(token: str = Depends(oauth2_scheme)):
+    credentials_exception = HTTPException(
+        status_code=401,
+        detail="Could not validate credentials",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        username: str = payload.get("sub")
+        if username is None:
+            raise credentials_exception
+    except PyJWTError:
+        raise credentials_exception
+    user = user_col.find_one({"username": username})
+    if user is None:
+        raise credentials_exception
+    return username
 
 
 # app.post
@@ -290,12 +316,21 @@ def add_data(username: str = Form(...), password: str = Form(...)):
 
 @app.post("/login")
 def login(username: str = Form(...), password: str = Form(...)):
-    if verify_user(username, password):
-        user = user_col.find_one({"username": username}, {"_id": 0})
-        write_flag = bool(user.get("write", False))
-        admin_flag = verify_admin(username)
-        return {"message": "login gelukt!", "write": write_flag, "admin": admin_flag}
-    raise HTTPException(status_code=401, detail="Invalide gebruikersnaam of paswoord")
+    if not verify_user(username, password):
+
+        raise HTTPException(status_code=401, detail="Invalide gebruikersnaam of paswoord")
+    
+    user = user_col.find_one({"username": username}, {"_id": 0})
+    write_flag = bool(user.get("write", False))
+    admin_flag = verify_admin(username)
+    
+    access_token = create_access_token({"sub": username})
+    return {
+        "access_token": access_token,
+        "token_type": "bearer",
+        "write": write_flag,
+        "admin": admin_flag,
+    }
 
 @app.post('/admin/set-write')
 def admin_set_write(target_username: str = Form(...), write: bool = Form(...), current_user: str = Depends(get_current_user)):

@@ -52,17 +52,16 @@
                     }
                     const html = data.map(u => `
                         <div class="data-item">
-                        <strong>Battery UID:</strong> ${u.batUID}<br>
-                        <strong>Created:</strong> ${u.createdAt}<br>
-                        <strong>Retired:</strong> ${u.retiredAt}<br>
-                        <strong>User:</strong> ${u.user}<br>
-                        <strong>Comment:</strong> ${u.comment || '/'}
+                        <strong>Username:</strong> ${u.username}<br>
+                        <strong>Write:</strong> ${u.write ? 'Yes' : 'No'}<br>
+                        <strong>Admin:</strong> ${u.admin ? 'Yes' : 'No'}
                         </div>
                     `).join('');
                     document.getElementById('user-list').innerHTML = html || '<p>No users found</p>';
                     } catch (e) {
                     document.getElementById('user-list').innerHTML = `<p style="color:red;">Error: ${e.message}</p>`;
                     }
+                }
             
                 loadusers();
             </script>

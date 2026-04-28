@@ -39,9 +39,17 @@
                     });
                     const data = await resp.json();
                     if (resp.ok) {
-                        if (data.admin) {
-                            alert("Je bent een leerkracht");
+                        const token = data.access_token;
+                        if (!token) {
+                            alert("Login failed: no access token returned");
                             return;
+                        }
+                        
+                        localStorage.setItem('token', token);
+                        localStorage.setItem("loggedInUser", f.username.value);
+
+                        if (data.admin) {
+                            location.href = "../codesadmin/leerlingen.html";
                         } else if (data.write) {
                             location.href = "../codes/batteries.html";
                         } else {
