@@ -14,7 +14,7 @@ from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from dotenv import load_dotenv
 from datetime import datetime, timedelta
-#from paho.mqtt import client as mqtt
+from paho.mqtt import client as mqtt
 
 
 templates = Jinja2Templates(directory="templates")
@@ -46,9 +46,14 @@ if not MONGO_URI:
     raise RuntimeError("MONGO_URI environment variable must be set")
 
 client = MongoClient(MONGO_URI, serverSelectionTimeoutMS=5000)
-#mqtt_client = mqtt.Client()
+#def on_connect(client, userdata, flags, rc):
+    #print('CONNACK received with code %d.' % (rc))
 
-BROKER = "test.mosquitto.org"
+mqtt_client = mqtt.Client()
+#client.on_connect = on_connect
+#client.connect('mqtt.2-wire.xyz', 1883)
+
+BROKER = "mqtt.2-wire.xyz"
 PORT = 8883
 topic_for_RPI = "RPITSM2/receiver"
 
@@ -312,6 +317,7 @@ def add_data(username: str = Form(...), password: str = Form(...)):
         "write": False,
         "admin": False,
     })
+    
     return {"message": "Gebruiker toegevoegd! Sluit dit venster en refresh de pagina om de aanpassingen te zien"}
 
 @app.post("/login")

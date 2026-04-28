@@ -188,3 +188,7 @@ footer{
 .title{
     justify-content:left;
 }
+#battery-list, #user-list{
+    display:flex;
+    flex-direction:column-reverse;
+}
